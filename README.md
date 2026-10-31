@@ -1,6 +1,6 @@
-# Painel da Gincana EJC
+# Painel da Gincana – EAC Barbacena
 
-Painel em HTML (arquivo único, sem instalação) que mostra o placar da gincana do EJC,
+Painel em HTML (arquivo único, sem instalação) que mostra o placar da gincana do EAC Barbacena (Encontro de Adolescentes com Cristo),
 a composição das equipes e o **detalhamento de cada ponto** de cada missão.
 Tudo é alimentado por arquivos CSV na pasta `dados/`.
 

@@ -3,14 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Painel da Gincana EJC</title>
+<title>Gincana EAC Barbacena</title>
 <style>
   :root {
-    --bg: #f4f6fa;
+    --brand: #cf0429;
+    --brand-dark: #a10320;
+    --brand-text: #b0031f;
+    --bg: #f6f4f3;
     --card: #ffffff;
-    --text: #1b2330;
-    --muted: #5d6878;
-    --line: #e2e7ef;
+    --text: #1f1a1b;
+    --muted: #645b5d;
+    --line: #e8e2e1;
     --gold: #c99a06;
     --warn-bg: #fff6db;
     --warn-text: #7a5b00;
@@ -18,13 +21,13 @@
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-    --bg: #10151d; --card: #19212c; --text: #e8edf4; --muted: #9aa6b6;
-    --line: #2a3442; --gold: #f0c13a; --warn-bg: #3a3014; --warn-text: #f3d77d;
+    --bg: #141112; --card: #1e1a1b; --text: #f1ecec; --muted: #a99fa1;
+    --line: #342d2e; --brand-text: #ff5b6e; --gold: #f0c13a; --warn-bg: #3a3014; --warn-text: #f3d77d;
     }
   }
   :root[data-theme="dark"] {
-    --bg: #10151d; --card: #19212c; --text: #e8edf4; --muted: #9aa6b6;
-    --line: #2a3442; --gold: #f0c13a; --warn-bg: #3a3014; --warn-text: #f3d77d;
+    --bg: #141112; --card: #1e1a1b; --text: #f1ecec; --muted: #a99fa1;
+    --line: #342d2e; --brand-text: #ff5b6e; --gold: #f0c13a; --warn-bg: #3a3014; --warn-text: #f3d77d;
   }
   * { box-sizing: border-box; }
   body {
@@ -35,15 +38,31 @@
     line-height: 1.4;
   }
   header {
-    display: flex; flex-wrap: wrap; gap: 12px;
-    align-items: center; justify-content: space-between;
-    padding: 18px 24px;
-    border-bottom: 1px solid var(--line);
-    background: var(--card);
+    background: var(--brand);
+    background-image: radial-gradient(ellipse at 15% 50%, rgba(255,255,255,.10), transparent 60%),
+                      linear-gradient(180deg, var(--brand), var(--brand-dark));
+    color: #fff;
+    border-bottom: 4px solid var(--brand-dark);
   }
-  header h1 { margin: 0; font-size: 1.4rem; }
-  header .sub { color: var(--muted); font-size: .9rem; }
+  .header-inner {
+    max-width: 1280px; margin: 0 auto;
+    display: flex; flex-wrap: wrap; gap: 16px;
+    align-items: center; justify-content: space-between;
+    padding: 16px;
+  }
+  .marca { display: flex; align-items: center; gap: 16px; min-width: 0; }
+  .marca img {
+    height: 96px; width: auto; border-radius: 10px; flex: none;
+    box-shadow: 0 0 0 2px rgba(255,255,255,.35);
+  }
+  .eyebrow { font-size: .78rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; opacity: .85; }
+  header h1 { margin: 2px 0; font-size: 1.7rem; font-weight: 800; letter-spacing: -.01em; }
+  header .sub { opacity: .88; font-size: .9rem; }
   .actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  header button, header .btn {
+    background: rgba(255,255,255,.12); color: #fff; border-color: rgba(255,255,255,.45);
+  }
+  header button:hover, header .btn:hover { background: rgba(255,255,255,.22); border-color: #fff; }
   button, .btn {
     font: inherit; font-size: .9rem;
     padding: 8px 14px; border-radius: 10px;
@@ -53,7 +72,18 @@
   button:hover, .btn:hover { border-color: var(--muted); }
   main { max-width: 1280px; margin: 0 auto; padding: 24px 16px 60px; }
   section { margin-bottom: 32px; }
-  h2 { font-size: 1.15rem; margin: 0 0 12px; }
+  h2 {
+    font-size: 1.15rem; margin: 0 0 12px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  main h2::before {
+    content: ""; width: 6px; height: 1.1em; border-radius: 3px; background: var(--brand-text);
+  }
+  footer {
+    text-align: center; color: var(--muted); font-size: .8rem;
+    padding: 0 16px 32px;
+  }
+  footer strong { color: var(--brand-text); }
   h3 { font-size: 1rem; margin: 0 0 8px; }
   .card {
     background: var(--card); border: 1px solid var(--line);
@@ -143,6 +173,8 @@
   .hidden { display: none !important; }
 
   @media (max-width: 760px) {
+    .marca img { height: 72px; }
+    header h1 { font-size: 1.35rem; }
     .placar { grid-template-columns: 1fr; }
     .vs { text-align: center; }
     .duas-colunas, .grid-equipes { grid-template-columns: 1fr; }
@@ -152,15 +184,21 @@
   }
   @media print {
     header .actions { display: none; }
+    header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     body { background: #fff; color: #000; }
   }
 </style>
 </head>
 <body>
 <header>
-  <div>
-    <h1 id="titulo">Gincana EJC</h1>
-    <div class="sub" id="atualizado">Encontro de Jovens com Cristo</div>
+ <div class="header-inner">
+  <div class="marca">
+    <img src="assets/eac-logo.jpg" alt="EAC – Encontro de Adolescentes com Cristo">
+    <div>
+      <div class="eyebrow">EAC Barbacena</div>
+      <h1 id="titulo">Painel da Gincana</h1>
+      <div class="sub" id="atualizado">Encontro de Adolescentes com Cristo</div>
+    </div>
   </div>
   <div class="actions">
     <label class="btn" for="arquivos">Carregar CSVs</label>
@@ -169,6 +207,7 @@
     <button id="limpar" type="button" title="Esquecer os CSVs carregados manualmente">Limpar CSVs</button>
     <button id="telao" type="button">Tela cheia</button>
   </div>
+ </div>
 </header>
 
 <main>
@@ -213,6 +252,7 @@
     </section>
   </div>
 </main>
+<footer><strong>EAC Barbacena</strong> · Encontro de Adolescentes com Cristo · Pontuação calculada a partir dos lançamentos publicados neste painel</footer>
 
 <script>
 const ARQUIVOS = ['equipes', 'integrantes', 'missoes', 'alimentos', 'arrecadacao', 'resultados'];
@@ -297,7 +337,7 @@ async function carregar() {
   const dados = Object.fromEntries(ARQUIVOS.map(n => [n, textos[n] ? lerCSV(textos[n]) : []]));
   renderizar(calcular(dados));
   document.getElementById('atualizado').textContent =
-    'Encontro de Jovens com Cristo · atualizado às ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    'Encontro de Adolescentes com Cristo · atualizado às ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
 }
 
 async function receberArquivos(lista) {
