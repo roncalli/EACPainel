@@ -362,6 +362,12 @@ function lerCSV(texto) {
 
 // ---------- Carregamento ----------
 
+// O Excel pode salvar CSV em UTF-8 ou em Windows-1252 (ANSI); aceita os dois.
+function decodificar(buffer) {
+  try { return new TextDecoder('utf-8', { fatal: true }).decode(buffer); }
+  catch { return new TextDecoder('windows-1252').decode(buffer); }
+}
+
 // CSVs enviados manualmente: ficam em memória e, quando possível, no navegador.
 let enviados = {};
 function lerGuardados() {
@@ -378,7 +384,7 @@ async function buscarDaPasta() {
   await Promise.all(ARQUIVOS.map(async nome => {
     try {
       const r = await fetch(`dados/${nome}.csv?t=${Date.now()}`, { cache: 'no-store' });
-      if (r.ok) textos[nome] = await r.text();
+      if (r.ok) textos[nome] = decodificar(await r.arrayBuffer());
     } catch {}
   }));
   return textos;
@@ -421,7 +427,7 @@ async function receberArquivos(lista) {
   const ignorados = [];
   for (const arq of lista) {
     const nome = normalizar(arq.name).replace(/\.csv$/, '');
-    if (ARQUIVOS.includes(nome)) textos[nome] = await arq.text();
+    if (ARQUIVOS.includes(nome)) textos[nome] = decodificar(await arq.arrayBuffer());
     else ignorados.push(arq.name);
   }
   guardar(textos);

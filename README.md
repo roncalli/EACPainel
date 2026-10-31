@@ -4,6 +4,8 @@ Painel em HTML (arquivo único, sem instalação) que mostra o placar da gincana
 a composição das equipes e o **detalhamento de cada ponto** de cada missão.
 Tudo é alimentado por arquivos CSV na pasta `dados/`.
 
+> Passo a passo completo e ilustrado: abra o arquivo **`GUIA.html`** (ou `GUIA.pdf`).
+
 ## Como abrir
 
 **Opção 1 – direto no navegador (sem internet nem servidor)**
