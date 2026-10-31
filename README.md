@@ -68,3 +68,17 @@ Missão sem lançamento aparece como **pendente**. Em caso de empate, lance as d
 - **Avisos**: equipes ou alimentos digitados errado aparecem em destaque no topo.
 
 Os dados de exemplo (nomes e quantidades) são fictícios — substitua pelos reais.
+
+## Resultado Final
+No fim do painel há o botão **Resultado Final**. Ele só fica habilitado quando **todas as missões**
+têm resultado lançado (a Missão 1 precisa de alimentos registrados e as demais de colocações em
+`resultados.csv`). Ao clicar, abre a página de encerramento com a mensagem aos adolescentes:
+quem venceu foi a solidariedade (com o total de alimentos arrecadados), todos os participantes
+e Cristo, além das passagens bíblicas (1Tm 4,12; Mt 25,40; Mt 5,16; Mt 18,20). O placar oficial
+aparece discretamente para registro, e o botão **Voltar ao painel** retorna ao placar.
+
+Os textos da mensagem ficam na função `paginaFinal` do `index.html`. Confira a redação dos
+versículos com a edição da Bíblia usada pelo grupo.
+
+Para testar a página antes do evento, carregue `dados/exemplos/resultados.csv` (todas as missões concluídas)
+pelo botão **Carregar CSVs**; depois clique em **Limpar CSVs** para voltar.

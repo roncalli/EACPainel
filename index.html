@@ -172,12 +172,62 @@
   code { background: var(--line); padding: 1px 5px; border-radius: 5px; font-size: .85em; }
   .hidden { display: none !important; }
 
+  /* Botão Resultado Final */
+  .finalizar { text-align: center; padding: 8px 0 0; }
+  .btn-final {
+    font-size: 1.15rem; font-weight: 800; letter-spacing: .02em;
+    padding: 16px 40px; border-radius: 999px; border: none;
+    background: var(--brand); color: #fff;
+    box-shadow: 0 6px 18px color-mix(in srgb, var(--brand) 35%, transparent);
+  }
+  .btn-final:hover:not(:disabled) { background: var(--brand-dark); }
+  .btn-final:disabled {
+    background: var(--line); color: var(--muted); box-shadow: none; cursor: not-allowed;
+  }
+  .finalizar p { margin: 10px 0 0; }
+
+  /* Página Resultado Final */
+  #final { max-width: 980px; margin: 0 auto; }
+  .final-hero { text-align: center; padding: 24px 0 8px; }
+  .final-hero .eyebrow { color: var(--brand-text); opacity: 1; }
+  .final-hero h2 { display: block; font-size: clamp(1.7rem, 4.5vw, 2.6rem); line-height: 1.15; margin: 8px 0 12px; }
+  .final-hero h2::before { display: none; }
+  .final-hero p { font-size: 1.1rem; color: var(--muted); max-width: 680px; margin: 0 auto; }
+  .vitoriosos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 28px 0; }
+  .vitorioso { text-align: center; border-top: 6px solid var(--brand); }
+  .vitorioso .icone {
+    width: 64px; height: 64px; margin: 4px auto 10px; border-radius: 50%;
+    display: grid; place-items: center;
+    background: color-mix(in srgb, var(--brand) 12%, transparent); color: var(--brand-text);
+  }
+  .vitorioso .icone svg { width: 32px; height: 32px; }
+  .vitorioso h3 { font-size: 1.25rem; margin-bottom: 6px; }
+  .vitorioso .destaque { font-size: 2rem; font-weight: 900; color: var(--brand-text); line-height: 1.1; }
+  .vitorioso p { margin: 8px 0 0; color: var(--muted); }
+  .versiculo {
+    margin: 0; padding: 28px 32px; border-radius: var(--radius);
+    background: linear-gradient(180deg, var(--brand), var(--brand-dark)); color: #fff; text-align: center;
+  }
+  .versiculo p { font-size: clamp(1.2rem, 2.6vw, 1.6rem); font-weight: 600; line-height: 1.4; margin: 0; font-family: Georgia, "Times New Roman", serif; }
+  .versiculo cite { display: block; margin-top: 12px; font-style: normal; font-weight: 700; letter-spacing: .08em; opacity: .9; }
+  .mensagem { margin: 24px 0; font-size: 1.05rem; }
+  .mensagem p { margin: 0 0 12px; }
+  .versiculos-menores { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 0 0 24px; }
+  .versiculos-menores blockquote { margin: 0; border-left: 4px solid var(--brand); }
+  .versiculos-menores p { margin: 0; font-family: Georgia, "Times New Roman", serif; font-size: 1.08rem; }
+  .versiculos-menores cite { display: block; margin-top: 8px; font-style: normal; font-weight: 700; color: var(--brand-text); font-size: .9rem; }
+  .agradecimento { text-align: center; font-size: 1.25rem; font-weight: 800; margin: 28px 0 12px; }
+  .agradecimento span { color: var(--c); }
+  .placar-oficial { text-align: center; color: var(--muted); font-size: .9rem; }
+  .final-acoes { text-align: center; margin: 20px 0 8px; }
+
   @media (max-width: 760px) {
     .marca img { height: 72px; }
     header h1 { font-size: 1.35rem; }
     .placar { grid-template-columns: 1fr; }
     .vs { text-align: center; }
-    .duas-colunas, .grid-equipes { grid-template-columns: 1fr; }
+    .duas-colunas, .grid-equipes, .vitoriosos, .versiculos-menores { grid-template-columns: 1fr; }
+    .versiculo { padding: 22px 18px; }
     .grid-missoes { grid-template-columns: 1fr; }
     ul.membros { columns: 1; }
     .total { font-size: 2.6rem; }
@@ -250,7 +300,14 @@
       <p class="muted small">Cada linha abaixo é um lançamento que compõe o placar. A soma de cada equipe é igual ao total do placar geral.</p>
       <div class="card tabela-scroll" id="extrato"></div>
     </section>
+
+    <section class="finalizar">
+      <button id="btn-final" class="btn-final" type="button" disabled>Resultado Final</button>
+      <p id="status-final" class="muted small"></p>
+    </section>
   </div>
+
+  <div id="final" class="hidden"></div>
 </main>
 <footer><strong>EAC Barbacena</strong> · Encontro de Adolescentes com Cristo · Pontuação calculada a partir dos lançamentos publicados neste painel</footer>
 
@@ -327,15 +384,34 @@ async function buscarDaPasta() {
   return textos;
 }
 
+let ultimo = null;
+const ROTA_FINAL = '#resultado-final';
+const todasConcluidas = r => r.missoes.length > 0 && r.missoes.every(m => m.concluida);
+
+// Alterna entre o painel e a página "Resultado Final" (só abre com todas as missões concluídas).
+function mostrarTela() {
+  if (!ultimo) return;
+  const final = location.hash === ROTA_FINAL && todasConcluidas(ultimo);
+  if (final) document.getElementById('final').innerHTML = paginaFinal(ultimo);
+  document.getElementById('painel').classList.toggle('hidden', final);
+  document.getElementById('final').classList.toggle('hidden', !final);
+}
+
 async function carregar() {
   const daPasta = await buscarDaPasta();
   const textos = { ...daPasta, ...lerGuardados() };
   const faltando = OBRIGATORIOS.filter(n => !textos[n]);
   document.getElementById('carregar').classList.toggle('hidden', !faltando.length);
-  document.getElementById('painel').classList.toggle('hidden', !!faltando.length);
-  if (faltando.length) return;
+  if (faltando.length) {
+    ultimo = null;
+    document.getElementById('painel').classList.add('hidden');
+    document.getElementById('final').classList.add('hidden');
+    return;
+  }
   const dados = Object.fromEntries(ARQUIVOS.map(n => [n, textos[n] ? lerCSV(textos[n]) : []]));
-  renderizar(calcular(dados));
+  ultimo = calcular(dados);
+  renderizar(ultimo);
+  mostrarTela();
   document.getElementById('atualizado').textContent =
     'Encontro de Adolescentes com Cristo · atualizado às ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
 }
@@ -578,6 +654,88 @@ function renderizar(r) {
     <tbody>${r.extrato.map(x => `<tr><td>${esc(x.missao.id)}. ${esc(x.missao.nome)}</td><td>${tag(x.equipe)}</td><td>${esc(x.descricao)}</td><td class="num">${fmt(x.pontos)}</td></tr>`).join('')}</tbody>
     <tfoot>${equipes.map(e => `<tr><td colspan="3">Total ${esc(e.nome)}</td><td class="num">${fmt(e.total)}</td></tr>`).join('')}</tfoot>
   </table>` : '<p class="muted">Nenhum ponto lançado ainda.</p>';
+
+  // Botão Resultado Final
+  const concluidas = missoes.filter(m => m.concluida).length;
+  const liberado = todasConcluidas(r);
+  document.getElementById('btn-final').disabled = !liberado;
+  document.getElementById('status-final').textContent = liberado
+    ? 'Todas as missões foram concluídas.'
+    : `Disponível ao concluir todas as missões (${concluidas} de ${missoes.length} concluídas).`;
+}
+
+const ICONES = {
+  coracao: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-7.5-4.6-10-9.3C.4 8.4 2.3 4.5 6 4.5c2.2 0 3.5 1.2 4.3 2.4.4.6 1 .6 1.4 0 .8-1.2 2.1-2.4 4.3-2.4 3.7 0 5.6 3.9 4 7.2C19.5 16.4 12 21 12 21z"/></svg>',
+  pessoas: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="8" cy="8" r="3.2"/><circle cx="16.5" cy="8.5" r="2.7"/><path d="M1.5 19c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6v1h-13v-1zM15 20v-1c0-1.9-.6-3.5-1.7-4.8.9-.5 2-.7 3.2-.7 3.1 0 6 2 6 5.2V20H15z"/></svg>',
+  cruz: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M10.5 2h3v6h5.5v3h-5.5v11h-3V11H5V8h5.5z"/></svg>',
+};
+
+function paginaFinal(r) {
+  const { equipes, missoes } = r;
+  const arrecadacao = missoes.find(m => m.tipo === 'arrecadacao');
+  const itens = arrecadacao ? equipes.flatMap(e => Object.values(arrecadacao.alimentos[e.id])) : [];
+  const totalItens = itens.reduce((s, i) => s + i.qtd, 0);
+  const tiposAlimento = new Set(itens.filter(i => i.qtd > 0).map(i => normalizar(i.alimento))).size;
+  const participantes = equipes.reduce((s, e) => s + e.lider.length + e.membros.length, 0);
+  const nomesEquipes = equipes.map(e => `<span style="--c:${esc(e.hex)}">${esc(e.nome)}</span>`);
+  const listaEquipes = nomesEquipes.length > 1
+    ? nomesEquipes.slice(0, -1).join(', ') + ' e ' + nomesEquipes.at(-1) : nomesEquipes.join('');
+
+  return `
+    <section class="final-hero">
+      <div class="eyebrow">Resultado Final</div>
+      <h2>E quem venceu esta gincana foi…</h2>
+      <p>Depois de ${missoes.length} missões, muita animação e muito trabalho em equipe, o resultado mais importante não cabe em um placar.</p>
+    </section>
+
+    <div class="vitoriosos">
+      <div class="card vitorioso">
+        <div class="icone">${ICONES.coracao}</div>
+        <h3>A Solidariedade</h3>
+        ${totalItens > 0 ? `<div class="destaque">${fmt(totalItens)}</div>
+        <div class="muted small">itens arrecadados${tiposAlimento ? ` · ${tiposAlimento} tipos de alimento` : ''}</div>` : ''}
+        <p>Cada pacote arrecadado vai chegar à mesa de uma família. Foi amor que virou gesto concreto.</p>
+      </div>
+      <div class="card vitorioso">
+        <div class="icone">${ICONES.pessoas}</div>
+        <h3>Todos os participantes</h3>
+        ${participantes > 0 ? `<div class="destaque">${fmt(participantes)}</div>
+        <div class="muted small">adolescentes em ação</div>` : ''}
+        <p>Quem criou, torceu, gritou, correu e se doou pela sua equipe. Aqui ninguém perdeu: todos cresceram juntos.</p>
+      </div>
+      <div class="card vitorioso">
+        <div class="icone">${ICONES.cruz}</div>
+        <h3>Cristo</h3>
+        <div class="muted small" style="margin-top:4px">“Onde dois ou três estão reunidos em meu nome, eu estou ali, no meio deles.” <strong>(Mt 18,20)</strong></div>
+        <p>Ele esteve no meio de nós em cada grito, cada abraço e cada alimento entregue.</p>
+      </div>
+    </div>
+
+    <blockquote class="versiculo">
+      <p>“Ninguém despreze a tua juventude. Ao contrário, sê para os fiéis um modelo na palavra, na conduta, na caridade, na fé e na pureza.”</p>
+      <cite>1 TIMÓTEO 4,12</cite>
+    </blockquote>
+
+    <div class="mensagem">
+      <p>Vocês não são apenas o futuro da Igreja: <strong>vocês são o presente dela.</strong> Deus não espera vocês crescerem para chamá-los. Ele conta com vocês agora, do jeito que vocês são, para levar o Evangelho aonde muitas vezes ninguém mais chega: à escola, ao grupo de amigos, à família, às redes sociais.</p>
+      <p>O adolescente que vive a fé com alegria evangeliza outro adolescente. Nesta gincana vocês mostraram isso: a fé que se transforma em ação, em partilha e em união. E Jesus deixou claro que nenhum gesto de amor passa despercebido aos olhos d’Ele.</p>
+    </div>
+
+    <div class="versiculos-menores">
+      <blockquote class="card">
+        <p>“Em verdade eu vos digo: todas as vezes que fizestes isso a um destes mais pequenos, que são meus irmãos, foi a mim que o fizestes.”</p>
+        <cite>Mateus 25,40</cite>
+      </blockquote>
+      <blockquote class="card">
+        <p>“Assim brilhe a vossa luz diante dos homens, para que vejam as vossas boas obras e glorifiquem o vosso Pai que está nos céus.”</p>
+        <cite>Mateus 5,16</cite>
+      </blockquote>
+    </div>
+
+    <div class="agradecimento">Obrigado, ${listaEquipes}!<br>Continuem sendo luz.</div>
+    <p class="placar-oficial">Para registro, o placar oficial ficou:
+      ${equipes.map(e => `${esc(e.nome)} ${fmt(e.total)} pts`).join(' · ')}. O detalhamento está no painel.</p>
+    <div class="final-acoes"><button type="button" id="voltar-painel">Voltar ao painel</button></div>`;
 }
 
 // ---------- Eventos ----------
@@ -593,6 +751,11 @@ document.getElementById('telao').addEventListener('click', () => {
   if (document.fullscreenElement) document.exitFullscreen();
   else document.documentElement.requestFullscreen?.();
 });
+document.getElementById('btn-final').addEventListener('click', () => { location.hash = ROTA_FINAL; scrollTo(0, 0); });
+document.getElementById('final').addEventListener('click', ev => {
+  if (ev.target.id === 'voltar-painel') { history.pushState('', '', location.pathname + location.search); mostrarTela(); scrollTo(0, 0); }
+});
+window.addEventListener('hashchange', mostrarTela);
 const drop = document.getElementById('drop');
 ['dragenter', 'dragover'].forEach(t => drop.addEventListener(t, ev => { ev.preventDefault(); drop.classList.add('over'); }));
 ['dragleave', 'drop'].forEach(t => drop.addEventListener(t, ev => { ev.preventDefault(); drop.classList.remove('over'); }));
