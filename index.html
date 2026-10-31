@@ -17,16 +17,14 @@
     --radius: 14px;
   }
   @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #10151d;
-      --card: #19212c;
-      --text: #e8edf4;
-      --muted: #9aa6b6;
-      --line: #2a3442;
-      --gold: #f0c13a;
-      --warn-bg: #3a3014;
-      --warn-text: #f3d77d;
+    :root:not([data-theme="light"]) {
+    --bg: #10151d; --card: #19212c; --text: #e8edf4; --muted: #9aa6b6;
+    --line: #2a3442; --gold: #f0c13a; --warn-bg: #3a3014; --warn-text: #f3d77d;
     }
+  }
+  :root[data-theme="dark"] {
+    --bg: #10151d; --card: #19212c; --text: #e8edf4; --muted: #9aa6b6;
+    --line: #2a3442; --gold: #f0c13a; --warn-bg: #3a3014; --warn-text: #f3d77d;
   }
   * { box-sizing: border-box; }
   body {
