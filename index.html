@@ -1,0 +1,568 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Painel da Gincana EJC</title>
+<style>
+  :root {
+    --bg: #f4f6fa;
+    --card: #ffffff;
+    --text: #1b2330;
+    --muted: #5d6878;
+    --line: #e2e7ef;
+    --gold: #c99a06;
+    --warn-bg: #fff6db;
+    --warn-text: #7a5b00;
+    --radius: 14px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #10151d;
+      --card: #19212c;
+      --text: #e8edf4;
+      --muted: #9aa6b6;
+      --line: #2a3442;
+      --gold: #f0c13a;
+      --warn-bg: #3a3014;
+      --warn-text: #f3d77d;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.4;
+  }
+  header {
+    display: flex; flex-wrap: wrap; gap: 12px;
+    align-items: center; justify-content: space-between;
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--line);
+    background: var(--card);
+  }
+  header h1 { margin: 0; font-size: 1.4rem; }
+  header .sub { color: var(--muted); font-size: .9rem; }
+  .actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  button, .btn {
+    font: inherit; font-size: .9rem;
+    padding: 8px 14px; border-radius: 10px;
+    border: 1px solid var(--line); background: var(--bg); color: var(--text);
+    cursor: pointer;
+  }
+  button:hover, .btn:hover { border-color: var(--muted); }
+  main { max-width: 1280px; margin: 0 auto; padding: 24px 16px 60px; }
+  section { margin-bottom: 32px; }
+  h2 { font-size: 1.15rem; margin: 0 0 12px; }
+  h3 { font-size: 1rem; margin: 0 0 8px; }
+  .card {
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 18px;
+  }
+  .muted { color: var(--muted); }
+  .small { font-size: .85rem; }
+
+  /* Placar */
+  .placar { display: grid; grid-template-columns: 1fr auto 1fr; gap: 16px; align-items: stretch; }
+  .vs { align-self: center; font-weight: 800; font-size: 1.6rem; color: var(--muted); }
+  .equipe-placar {
+    border-top: 8px solid var(--c);
+    text-align: center; position: relative;
+  }
+  .equipe-placar.lider-geral { box-shadow: 0 0 0 3px var(--gold); }
+  .coroa {
+    position: absolute; top: 10px; right: 12px;
+    background: var(--gold); color: #000; font-weight: 700; font-size: .75rem;
+    padding: 3px 8px; border-radius: 999px;
+  }
+  .logo {
+    width: 96px; height: 96px; border-radius: 50%;
+    margin: 4px auto 10px; display: grid; place-items: center;
+    background: var(--c); color: #fff; font-size: 2.4rem; font-weight: 800;
+    overflow: hidden;
+  }
+  .logo img { width: 100%; height: 100%; object-fit: cover; }
+  .logo.mini { width: 28px; height: 28px; font-size: .9rem; margin: 0; flex: none; }
+  .equipe-nome { font-size: 1.3rem; font-weight: 800; color: var(--c); }
+  .total { font-size: 3.2rem; font-weight: 900; line-height: 1.1; margin: 6px 0; }
+  .grito { font-style: italic; color: var(--muted); margin-top: 6px; }
+  .barra { display: flex; height: 14px; border-radius: 999px; overflow: hidden; background: var(--line); margin-top: 16px; }
+  .barra div { background: var(--c); transition: width .6s; }
+
+  /* Tabela resumo */
+  table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+  th, td { padding: 8px 10px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+  th { font-size: .8rem; text-transform: uppercase; letter-spacing: .03em; color: var(--muted); }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  tfoot td { font-weight: 800; border-bottom: none; }
+  .tabela-scroll { overflow-x: auto; }
+  .grid-missoes > *, .grid-equipes > *, .duas-colunas > *, .placar > * { min-width: 0; }
+  .tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-weight: 700; color: var(--c);
+  }
+  .pill {
+    display: inline-block; font-size: .75rem; font-weight: 700;
+    padding: 2px 8px; border-radius: 999px; background: var(--line); color: var(--muted);
+  }
+  .pill.ok { background: var(--c, #2a8); color: #fff; }
+
+  /* Missões */
+  .grid-missoes { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(360px, 100%), 1fr)); gap: 16px; }
+  .missao-head { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; margin-bottom: 4px; }
+  .missao-num { font-size: .8rem; font-weight: 800; color: var(--muted); text-transform: uppercase; }
+  .regra { font-size: .85rem; color: var(--muted); margin-bottom: 12px; }
+  .vencedor {
+    margin-top: 10px; padding: 8px 12px; border-radius: 10px;
+    background: color-mix(in srgb, var(--c) 14%, transparent);
+    border-left: 4px solid var(--c); font-weight: 700;
+  }
+  .duas-colunas { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .alimentos-equipe h3 { color: var(--c); display: flex; align-items: center; gap: 8px; }
+
+  /* Equipes */
+  .grid-equipes { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .composicao { border-top: 6px solid var(--c); }
+  .lider { display: flex; gap: 10px; align-items: center; padding: 10px 12px; border-radius: 10px;
+           background: color-mix(in srgb, var(--c) 12%, transparent); margin-bottom: 10px; }
+  .lider strong { color: var(--c); }
+  ul.membros { list-style: none; margin: 0; padding: 0; columns: 2; column-gap: 16px; }
+  ul.membros li { padding: 4px 0; border-bottom: 1px dashed var(--line); break-inside: avoid; }
+
+  .avisos { background: var(--warn-bg); color: var(--warn-text); border-radius: 10px; padding: 12px 16px; margin-bottom: 20px; }
+  .avisos ul { margin: 6px 0 0; padding-left: 20px; }
+
+  #carregar {
+    max-width: 640px; margin: 40px auto; text-align: center;
+  }
+  #drop {
+    border: 2px dashed var(--line); border-radius: var(--radius); padding: 30px; margin-top: 16px;
+  }
+  #drop.over { border-color: var(--muted); background: var(--card); }
+  code { background: var(--line); padding: 1px 5px; border-radius: 5px; font-size: .85em; }
+  .hidden { display: none !important; }
+
+  @media (max-width: 760px) {
+    .placar { grid-template-columns: 1fr; }
+    .vs { text-align: center; }
+    .duas-colunas, .grid-equipes { grid-template-columns: 1fr; }
+    .grid-missoes { grid-template-columns: 1fr; }
+    ul.membros { columns: 1; }
+    .total { font-size: 2.6rem; }
+  }
+  @media print {
+    header .actions { display: none; }
+    body { background: #fff; color: #000; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1 id="titulo">Gincana EJC</h1>
+    <div class="sub" id="atualizado">Encontro de Jovens com Cristo</div>
+  </div>
+  <div class="actions">
+    <label class="btn" for="arquivos">Carregar CSVs</label>
+    <input type="file" id="arquivos" accept=".csv,text/csv" multiple class="hidden">
+    <button id="recarregar" type="button">Atualizar</button>
+    <button id="limpar" type="button" title="Esquecer os CSVs carregados manualmente">Limpar CSVs</button>
+    <button id="telao" type="button">Tela cheia</button>
+  </div>
+</header>
+
+<main>
+  <div id="carregar" class="card hidden">
+    <h2>Carregue os arquivos do painel</h2>
+    <p class="muted">Selecione (ou arraste para cá) os 6 arquivos CSV da pasta <code>dados</code>:
+      <code>equipes.csv</code>, <code>integrantes.csv</code>, <code>missoes.csv</code>,
+      <code>alimentos.csv</code>, <code>arrecadacao.csv</code> e <code>resultados.csv</code>.</p>
+    <div id="drop">
+      <label class="btn" for="arquivos">Escolher arquivos</label>
+      <p class="muted small">Os arquivos ficam guardados neste navegador até você clicar em “Limpar CSVs”.</p>
+    </div>
+  </div>
+
+  <div id="painel" class="hidden">
+    <div id="avisos"></div>
+
+    <section>
+      <h2>Placar geral</h2>
+      <div id="placar"></div>
+    </section>
+
+    <section>
+      <h2>Pontuação por missão</h2>
+      <div class="card tabela-scroll" id="resumo"></div>
+    </section>
+
+    <section>
+      <h2>Detalhamento das missões</h2>
+      <div class="grid-missoes" id="missoes"></div>
+    </section>
+
+    <section>
+      <h2>Composição das equipes</h2>
+      <div class="grid-equipes" id="equipes"></div>
+    </section>
+
+    <section>
+      <h2>Extrato de pontos</h2>
+      <p class="muted small">Cada linha abaixo é um lançamento que compõe o placar. A soma de cada equipe é igual ao total do placar geral.</p>
+      <div class="card tabela-scroll" id="extrato"></div>
+    </section>
+  </div>
+</main>
+
+<script>
+const ARQUIVOS = ['equipes', 'integrantes', 'missoes', 'alimentos', 'arrecadacao', 'resultados'];
+const OBRIGATORIOS = ['equipes', 'missoes'];
+const CHAVE_STORAGE = 'ejc-painel-csv';
+const INTERVALO_ATUALIZACAO = 30000;
+
+// ---------- Utilidades ----------
+
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const fmt = n => Number(n).toLocaleString('pt-BR', { maximumFractionDigits: 2 });
+const normalizar = s => String(s ?? '').normalize('NFD').replace(/[̀-ͯ]/g, '').trim().toLowerCase();
+const chaveCabecalho = s => normalizar(s).replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
+
+function numero(v) {
+  let s = String(v ?? '').trim();
+  if (!s) return 0;
+  // Aceita "1.234,5" (pt-BR) e "1234.5"
+  if (s.includes(',')) s = s.replace(/\./g, '').replace(',', '.');
+  const n = Number(s);
+  return Number.isFinite(n) ? n : NaN;
+}
+
+// Parser CSV com suporte a aspas; detecta separador ";" ou ",".
+function lerCSV(texto) {
+  texto = texto.replace(/^﻿/, '');
+  const primeira = texto.split(/\r?\n/, 1)[0];
+  const sep = (primeira.split(';').length >= primeira.split(',').length) ? ';' : ',';
+  const linhas = [];
+  let linha = [], campo = '', aspas = false;
+  for (let i = 0; i < texto.length; i++) {
+    const c = texto[i];
+    if (aspas) {
+      if (c === '"') {
+        if (texto[i + 1] === '"') { campo += '"'; i++; } else aspas = false;
+      } else campo += c;
+    } else if (c === '"') aspas = true;
+    else if (c === sep) { linha.push(campo); campo = ''; }
+    else if (c === '\n' || c === '\r') {
+      if (c === '\r' && texto[i + 1] === '\n') i++;
+      linha.push(campo); linhas.push(linha); linha = []; campo = '';
+    } else campo += c;
+  }
+  if (campo !== '' || linha.length) { linha.push(campo); linhas.push(linha); }
+  const validas = linhas.filter(l => l.some(v => v.trim() !== ''));
+  if (!validas.length) return [];
+  const cab = validas[0].map(chaveCabecalho);
+  return validas.slice(1).map(l => Object.fromEntries(cab.map((k, i) => [k, (l[i] ?? '').trim()])));
+}
+
+// ---------- Carregamento ----------
+
+// CSVs enviados manualmente: ficam em memória e, quando possível, no navegador.
+let enviados = {};
+function lerGuardados() {
+  try { return { ...JSON.parse(localStorage.getItem(CHAVE_STORAGE)), ...enviados }; } catch { return enviados; }
+}
+function guardar(textos) {
+  enviados = textos;
+  try { localStorage.setItem(CHAVE_STORAGE, JSON.stringify(textos)); } catch {}
+}
+
+async function buscarDaPasta() {
+  const textos = {};
+  if (!location.protocol.startsWith('http')) return textos;
+  await Promise.all(ARQUIVOS.map(async nome => {
+    try {
+      const r = await fetch(`dados/${nome}.csv?t=${Date.now()}`, { cache: 'no-store' });
+      if (r.ok) textos[nome] = await r.text();
+    } catch {}
+  }));
+  return textos;
+}
+
+async function carregar() {
+  const daPasta = await buscarDaPasta();
+  const textos = { ...daPasta, ...lerGuardados() };
+  const faltando = OBRIGATORIOS.filter(n => !textos[n]);
+  document.getElementById('carregar').classList.toggle('hidden', !faltando.length);
+  document.getElementById('painel').classList.toggle('hidden', !!faltando.length);
+  if (faltando.length) return;
+  const dados = Object.fromEntries(ARQUIVOS.map(n => [n, textos[n] ? lerCSV(textos[n]) : []]));
+  renderizar(calcular(dados));
+  document.getElementById('atualizado').textContent =
+    'Encontro de Jovens com Cristo · atualizado às ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+}
+
+async function receberArquivos(lista) {
+  const textos = lerGuardados();
+  const ignorados = [];
+  for (const arq of lista) {
+    const nome = normalizar(arq.name).replace(/\.csv$/, '');
+    if (ARQUIVOS.includes(nome)) textos[nome] = await arq.text();
+    else ignorados.push(arq.name);
+  }
+  guardar(textos);
+  if (ignorados.length) alert('Arquivos ignorados (nome não reconhecido):\n' + ignorados.join('\n') +
+    '\n\nNomes esperados: ' + ARQUIVOS.map(n => n + '.csv').join(', '));
+  carregar();
+}
+
+// ---------- Cálculo ----------
+
+function calcular(d) {
+  const avisos = [];
+  const equipes = d.equipes.filter(e => e.id).map(e => ({
+    id: normalizar(e.id),
+    nome: e.nome || e.id,
+    cor: e.cor || '',
+    hex: e.cor_hex || '#888',
+    logo: e.logo || '',
+    grito: e.grito_de_guerra || '',
+    lider: [], membros: [],
+    total: 0,
+  }));
+  const porId = Object.fromEntries(equipes.map(e => [e.id, e]));
+  const equipeDe = (id, origem) => {
+    const e = porId[normalizar(id)];
+    if (!e) avisos.push(`${origem}: equipe "${id}" não existe em equipes.csv.`);
+    return e;
+  };
+
+  for (const p of d.integrantes) {
+    if (!p.nome) continue;
+    const e = equipeDe(p.equipe, 'integrantes.csv');
+    if (!e) continue;
+    (normalizar(p.funcao).startsWith('lider') ? e.lider : e.membros).push(p.nome);
+  }
+
+  const tabelaAlimentos = d.alimentos.filter(a => a.alimento).map(a => ({
+    nome: a.alimento, unidade: a.unidade || '', pontos: numero(a.pontos_por_unidade),
+  }));
+  const alimentoPor = Object.fromEntries(tabelaAlimentos.map(a => [normalizar(a.nome), a]));
+
+  const extrato = [];
+  const missoes = d.missoes.filter(m => m.id).map(m => ({
+    id: m.id,
+    nome: m.nome || `Missão ${m.id}`,
+    descricao: m.descricao || '',
+    tipo: normalizar(m.tipo) || 'colocacao',
+    pontos1: numero(m.pontos_1),
+    pontos2: numero(m.pontos_2),
+    julgamento: m.julgamento || '',
+    pontos: Object.fromEntries(equipes.map(e => [e.id, 0])),
+    linhas: [],
+    vencedores: [],
+    concluida: false,
+  }));
+
+  for (const m of missoes) {
+    if (m.tipo === 'arrecadacao') {
+      // Agrupa por equipe e alimento
+      m.alimentos = Object.fromEntries(equipes.map(e => [e.id, {}]));
+      for (const r of d.arrecadacao) {
+        if (!r.equipe && !r.alimento) continue;
+        const e = equipeDe(r.equipe, 'arrecadacao.csv');
+        if (!e) continue;
+        const qtd = numero(r.quantidade);
+        if (Number.isNaN(qtd)) { avisos.push(`arrecadacao.csv: quantidade inválida "${r.quantidade}" (${r.alimento}).`); continue; }
+        const ref = alimentoPor[normalizar(r.alimento)];
+        if (!ref) avisos.push(`arrecadacao.csv: alimento "${r.alimento}" não está em alimentos.csv — contado com 0 ponto.`);
+        const chave = ref ? ref.nome : r.alimento;
+        const item = m.alimentos[e.id][chave] ||= {
+          alimento: chave, unidade: ref?.unidade || '', ptsUnit: ref ? ref.pontos : 0, qtd: 0, obs: [],
+        };
+        item.qtd += qtd;
+        if (r.observacao) item.obs.push(r.observacao);
+      }
+      for (const e of equipes) {
+        for (const it of Object.values(m.alimentos[e.id])) {
+          it.subtotal = it.qtd * it.ptsUnit;
+          m.pontos[e.id] += it.subtotal;
+          extrato.push({ missao: m, equipe: e, descricao: `${fmt(it.qtd)} × ${it.alimento} (${fmt(it.ptsUnit)} pt/un.)`, pontos: it.subtotal });
+        }
+      }
+      const max = Math.max(...equipes.map(e => m.pontos[e.id]));
+      m.concluida = max > 0;
+      if (m.concluida) {
+        m.vencedores = equipes.filter(e => m.pontos[e.id] === max);
+        // Bônus opcional para quem vencer a arrecadação
+        if (m.pontos1 > 0) for (const e of m.vencedores) {
+          m.pontos[e.id] += m.pontos1;
+          extrato.push({ missao: m, equipe: e, descricao: 'Bônus: 1º lugar na arrecadação', pontos: m.pontos1 });
+        }
+      }
+    } else {
+      const res = d.resultados.filter(r => String(r.missao).trim() === String(m.id).trim());
+      for (const r of res) {
+        const e = equipeDe(r.equipe, `resultados.csv (missão ${m.id})`);
+        if (!e) continue;
+        const col = parseInt(r.colocacao, 10);
+        if (!col) continue;
+        const pts = col === 1 ? m.pontos1 : col === 2 ? m.pontos2 : 0;
+        m.pontos[e.id] += pts;
+        m.linhas.push({ equipe: e, colocacao: col, pontos: pts, obs: r.observacao || '' });
+        extrato.push({ missao: m, equipe: e, descricao: `${col}º lugar` + (r.observacao ? ` — ${r.observacao}` : ''), pontos: pts });
+      }
+      m.linhas.sort((a, b) => a.colocacao - b.colocacao);
+      m.concluida = m.linhas.length > 0;
+      m.vencedores = m.linhas.filter(l => l.colocacao === 1).map(l => l.equipe);
+    }
+    for (const e of equipes) e.total += m.pontos[e.id];
+  }
+
+  const maiorTotal = Math.max(0, ...equipes.map(e => e.total));
+  const lideresGerais = maiorTotal > 0 ? equipes.filter(e => e.total === maiorTotal) : [];
+  return { equipes, missoes, tabelaAlimentos, extrato, avisos, lideresGerais };
+}
+
+// ---------- Renderização ----------
+
+function logo(e, mini = false) {
+  const conteudo = e.logo
+    ? `<img src="${esc(e.logo)}" alt="${esc(e.nome)}">`
+    : esc((e.nome.replace(/^equipe\s+/i, '')[0] || '?').toUpperCase());
+  return `<div class="logo${mini ? ' mini' : ''}" style="--c:${esc(e.hex)}">${conteudo}</div>`;
+}
+const tag = e => `<span class="tag" style="--c:${esc(e.hex)}">${logo(e, true)}${esc(e.nome)}</span>`;
+const nomesVencedores = v => v.map(e => e.nome).join(' e ');
+
+function vencedorBox(m) {
+  if (!m.concluida) return `<div class="muted small" style="margin-top:10px">Aguardando resultado.</div>`;
+  if (m.vencedores.length > 1) return `<div class="vencedor" style="--c:#888">Empate entre ${esc(nomesVencedores(m.vencedores))}</div>`;
+  const v = m.vencedores[0];
+  if (!v) return '';
+  return `<div class="vencedor" style="--c:${esc(v.hex)}">Vencedora da missão: ${esc(v.nome)}</div>`;
+}
+
+function renderizar(r) {
+  const { equipes, missoes } = r;
+
+  document.getElementById('avisos').innerHTML = r.avisos.length
+    ? `<div class="avisos"><strong>Atenção — verifique os CSVs:</strong><ul>${[...new Set(r.avisos)].map(a => `<li>${esc(a)}</li>`).join('')}</ul></div>`
+    : '';
+
+  // Placar
+  const somaTotal = equipes.reduce((s, e) => s + Math.max(0, e.total), 0);
+  const cartoes = equipes.map(e => {
+    const lidera = r.lideresGerais.includes(e) && r.lideresGerais.length === 1;
+    return `<div class="card equipe-placar${lidera ? ' lider-geral' : ''}" style="--c:${esc(e.hex)}">
+      ${lidera ? '<span class="coroa">LIDERANDO</span>' : ''}
+      ${logo(e)}
+      <div class="equipe-nome">${esc(e.nome)}</div>
+      <div class="muted small">Líder: ${esc(e.lider.join(', ') || '—')}</div>
+      <div class="total">${fmt(e.total)}</div>
+      <div class="muted small">pontos</div>
+      ${e.grito ? `<div class="grito">“${esc(e.grito)}”</div>` : ''}
+    </div>`;
+  });
+  const barra = `<div class="barra">${equipes.map(e =>
+    `<div style="--c:${esc(e.hex)};width:${somaTotal ? (Math.max(0, e.total) / somaTotal * 100) : 100 / equipes.length}%"></div>`).join('')}</div>`;
+  document.getElementById('placar').innerHTML = (equipes.length === 2
+    ? `<div class="placar">${cartoes[0]}<div class="vs">×</div>${cartoes[1]}</div>`
+    : `<div class="grid-equipes">${cartoes.join('')}</div>`) + barra;
+
+  // Resumo por missão
+  document.getElementById('resumo').innerHTML = `<table>
+    <thead><tr><th>Missão</th><th>Critério</th>${equipes.map(e => `<th class="num">${tag(e)}</th>`).join('')}<th>Vencedora</th></tr></thead>
+    <tbody>${missoes.map(m => `<tr>
+      <td><strong>${esc(m.id)}.</strong> ${esc(m.nome)}</td>
+      <td class="muted small">${esc(m.julgamento)}</td>
+      ${equipes.map(e => `<td class="num">${m.concluida ? fmt(m.pontos[e.id]) : '—'}</td>`).join('')}
+      <td>${!m.concluida ? '<span class="pill">pendente</span>'
+        : m.vencedores.length === 1 ? tag(m.vencedores[0])
+        : m.vencedores.length > 1 ? '<span class="pill">empate</span>' : '—'}</td>
+    </tr>`).join('')}</tbody>
+    <tfoot><tr><td colspan="2">Total geral</td>${equipes.map(e => `<td class="num">${fmt(e.total)}</td>`).join('')}<td></td></tr></tfoot>
+  </table>`;
+
+  // Detalhe das missões
+  document.getElementById('missoes').innerHTML = missoes.map(m => {
+    const cabecalho = `<div class="missao-head">
+        <span class="missao-num">Missão ${esc(m.id)}</span>
+        <span class="pill">${esc(m.julgamento || (m.tipo === 'arrecadacao' ? 'Contagem' : 'Colocação'))}</span>
+      </div>
+      <h3>${esc(m.nome)}</h3>
+      <div class="regra">${esc(m.descricao)}</div>`;
+
+    if (m.tipo === 'arrecadacao') {
+      const porEquipe = equipes.map(e => {
+        const itens = Object.values(m.alimentos[e.id]).sort((a, b) => b.subtotal - a.subtotal);
+        return `<div class="alimentos-equipe" style="--c:${esc(e.hex)}">
+          <h3>${logo(e, true)}${esc(e.nome)}</h3>
+          <div class="tabela-scroll"><table>
+            <thead><tr><th>Alimento</th><th class="num">Qtd</th><th class="num">Pts/un.</th><th class="num">Pontos</th></tr></thead>
+            <tbody>${itens.length ? itens.map(it => `<tr title="${esc(it.obs.join(' | '))}">
+              <td>${esc(it.alimento)}${it.unidade ? ` <span class="muted small">(${esc(it.unidade)})</span>` : ''}</td>
+              <td class="num">${fmt(it.qtd)}</td><td class="num">${fmt(it.ptsUnit)}</td><td class="num">${fmt(it.subtotal)}</td>
+            </tr>`).join('') : '<tr><td colspan="4" class="muted">Nenhum alimento registrado.</td></tr>'}</tbody>
+            <tfoot><tr><td>Total</td><td class="num">${fmt(itens.reduce((s, i) => s + i.qtd, 0))}</td><td></td><td class="num">${fmt(itens.reduce((s, i) => s + i.subtotal, 0))}</td></tr></tfoot>
+          </table></div>
+        </div>`;
+      }).join('');
+      const tabela = `<details style="margin-top:12px"><summary class="small muted" style="cursor:pointer">Tabela de pontos por alimento</summary>
+        <div class="tabela-scroll"><table><thead><tr><th>Alimento</th><th>Unidade</th><th class="num">Pontos/un.</th></tr></thead>
+        <tbody>${r.tabelaAlimentos.map(a => `<tr><td>${esc(a.nome)}</td><td>${esc(a.unidade)}</td><td class="num">${fmt(a.pontos)}</td></tr>`).join('')}</tbody></table></div>
+        ${m.pontos1 > 0 ? `<p class="small muted">Bônus para a equipe vencedora da arrecadação: ${fmt(m.pontos1)} pontos.</p>` : ''}
+      </details>`;
+      return `<div class="card" style="grid-column:1/-1">${cabecalho}<div class="duas-colunas">${porEquipe}</div>${tabela}${vencedorBox(m)}</div>`;
+    }
+
+    const regra = `<p class="small muted">Pontuação: 1º lugar ${fmt(m.pontos1)} pts · 2º lugar ${fmt(m.pontos2)} pts</p>`;
+    const linhas = m.linhas.length
+      ? `<div class="tabela-scroll"><table><thead><tr><th>Colocação</th><th>Equipe</th><th class="num">Pontos</th><th>Observação</th></tr></thead>
+         <tbody>${m.linhas.map(l => `<tr><td>${l.colocacao}º</td><td>${tag(l.equipe)}</td><td class="num">${fmt(l.pontos)}</td><td class="small muted">${esc(l.obs)}</td></tr>`).join('')}</tbody></table></div>`
+      : '';
+    return `<div class="card">${cabecalho}${regra}${linhas}${vencedorBox(m)}</div>`;
+  }).join('');
+
+  // Composição
+  document.getElementById('equipes').innerHTML = equipes.map(e => `
+    <div class="card composicao" style="--c:${esc(e.hex)}">
+      <h3 style="display:flex;align-items:center;gap:8px;color:${esc(e.hex)}">${logo(e, true)}${esc(e.nome)}
+        ${e.cor ? `<span class="pill">Cor: ${esc(e.cor)}</span>` : ''}</h3>
+      <div class="lider"><span class="muted small">Líder</span><strong>${esc(e.lider.join(', ') || '—')}</strong></div>
+      <div class="muted small" style="margin-bottom:6px">Equipe (${e.membros.length} ${e.membros.length === 1 ? 'integrante' : 'integrantes'})</div>
+      <ul class="membros">${e.membros.map(n => `<li>${esc(n)}</li>`).join('') || '<li class="muted">Nenhum integrante cadastrado.</li>'}</ul>
+    </div>`).join('');
+
+  // Extrato
+  document.getElementById('extrato').innerHTML = r.extrato.length ? `<table>
+    <thead><tr><th>Missão</th><th>Equipe</th><th>Lançamento</th><th class="num">Pontos</th></tr></thead>
+    <tbody>${r.extrato.map(x => `<tr><td>${esc(x.missao.id)}. ${esc(x.missao.nome)}</td><td>${tag(x.equipe)}</td><td>${esc(x.descricao)}</td><td class="num">${fmt(x.pontos)}</td></tr>`).join('')}</tbody>
+    <tfoot>${equipes.map(e => `<tr><td colspan="3">Total ${esc(e.nome)}</td><td class="num">${fmt(e.total)}</td></tr>`).join('')}</tfoot>
+  </table>` : '<p class="muted">Nenhum ponto lançado ainda.</p>';
+}
+
+// ---------- Eventos ----------
+
+document.getElementById('arquivos').addEventListener('change', ev => { receberArquivos([...ev.target.files]); ev.target.value = ''; });
+document.getElementById('recarregar').addEventListener('click', carregar);
+document.getElementById('limpar').addEventListener('click', () => {
+  enviados = {};
+  try { localStorage.removeItem(CHAVE_STORAGE); } catch {}
+  carregar();
+});
+document.getElementById('telao').addEventListener('click', () => {
+  if (document.fullscreenElement) document.exitFullscreen();
+  else document.documentElement.requestFullscreen?.();
+});
+const drop = document.getElementById('drop');
+['dragenter', 'dragover'].forEach(t => drop.addEventListener(t, ev => { ev.preventDefault(); drop.classList.add('over'); }));
+['dragleave', 'drop'].forEach(t => drop.addEventListener(t, ev => { ev.preventDefault(); drop.classList.remove('over'); }));
+drop.addEventListener('drop', ev => receberArquivos([...ev.dataTransfer.files]));
+
+carregar();
+// Quando servido por HTTP, relê a pasta dados/ periodicamente (útil no telão).
+if (location.protocol.startsWith('http')) setInterval(carregar, INTERVALO_ATUALIZACAO);
+</script>
+</body>
+</html>

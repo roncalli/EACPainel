@@ -1,0 +1,7 @@
+id;nome;descricao;tipo;pontos_1;pontos_2;julgamento
+1;Arrecadação de alimentos;Cada equipe registra o tipo e a quantidade de alimentos, e cada tipo tem um valor em pontos por unidade (ver alimentos.csv).;arrecadacao;0;0;Contagem dos alimentos
+2;Identidade Visual e Grito de Guerra;Criação da identidade visual (que passa a identificar a equipe no painel) e do grito de guerra.;colocacao;100;50;Jurados
+3;Representatividade da cor;Equipe com mais representatividade em relação à cor da equipe (Azul ou Verde).;colocacao;100;50;Jurados
+4;Grito de Guerra;Equipe mais animada e sincronizada no grito de guerra.;colocacao;100;50;Jurados
+5;Queimada;Partida de queimada entre as equipes.;colocacao;100;50;Resultado do jogo
+6;Circuito;Circuito de provas. Somente a equipe vencedora pontua.;colocacao;500;0;Resultado da prova
