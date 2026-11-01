@@ -397,11 +397,10 @@ function paginaFinal(r) {
 
     <div class="vitoriosos">
       <div class="card vitorioso">
-        <div class="icone">${ICONES.coracao}</div>
-        <h3>A Solidariedade</h3>
-        ${totalItens > 0 ? `<div class="destaque">${fmt(totalItens)}</div>
-        <div class="muted small">itens arrecadados${tiposAlimento ? ` · ${tiposAlimento} tipos de alimento` : ''}</div>` : ''}
-        <p>Cada pacote arrecadado vai chegar à mesa de uma família. Foi amor que virou gesto concreto.</p>
+        <div class="icone">${ICONES.cruz}</div>
+        <h3>Cristo</h3>
+        <div class="muted small" style="margin-top:4px">“Onde dois ou três estão reunidos em meu nome, eu estou ali, no meio deles.” <strong>(Mt 18,20)</strong></div>
+        <p>Ele esteve no meio de nós em cada grito, cada abraço e cada alimento entregue.</p>
       </div>
       <div class="card vitorioso">
         <div class="icone">${ICONES.pessoas}</div>
@@ -411,10 +410,11 @@ function paginaFinal(r) {
         <p>Quem criou, torceu, gritou, correu e se doou pela sua equipe. Aqui ninguém perdeu: todos cresceram juntos.</p>
       </div>
       <div class="card vitorioso">
-        <div class="icone">${ICONES.cruz}</div>
-        <h3>Cristo</h3>
-        <div class="muted small" style="margin-top:4px">“Onde dois ou três estão reunidos em meu nome, eu estou ali, no meio deles.” <strong>(Mt 18,20)</strong></div>
-        <p>Ele esteve no meio de nós em cada grito, cada abraço e cada alimento entregue.</p>
+        <div class="icone">${ICONES.coracao}</div>
+        <h3>A Solidariedade</h3>
+        ${totalItens > 0 ? `<div class="destaque">${fmt(totalItens)}</div>
+        <div class="muted small">itens arrecadados${tiposAlimento ? ` · ${tiposAlimento} tipos de alimento` : ''}</div>` : ''}
+        <p>Cada pacote arrecadado vai chegar à mesa de uma família. Foi amor que virou gesto concreto.</p>
       </div>
     </div>
 
