@@ -15,14 +15,14 @@ Tudo é alimentado por arquivos CSV na pasta `dados/`.
 
 **Opção 2 – com servidor local (atualiza sozinho a cada 30 s, ideal para o telão)**
 ```bash
-cd EJCPainel
+cd EACPainel
 python3 -m http.server 8000
 ```
 Abra `http://localhost:8000`. Basta salvar o CSV e o painel se atualiza.
 > Se você tiver carregado CSVs manualmente antes, clique em **Limpar CSVs** para voltar a ler a pasta `dados/`.
 
 **Opção 3 – online pelo GitHub Pages**
-Endereço: https://roncalli.github.io/EJCPainel/
+Endereço: https://roncalli.github.io/EACPainel/
 Edite o CSV direto no GitHub (abra o arquivo em `dados/` → ícone de lápis → *Commit changes*).
 Em 1 a 2 minutos o site é republicado e o painel aberto se atualiza sozinho (relê os dados a cada 30 s).
 
