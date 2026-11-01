@@ -93,7 +93,7 @@
       <li><a href="#equipes">Cadastrar equipes e integrantes</a></li>
       <li><a href="#missoes">Conferir missões e pontos</a></li>
       <li><a href="#alimentos">Missão 1 – Alimentos</a></li>
-      <li><a href="#resultados">Missões 2 a 6 – Resultados</a></li>
+      <li><a href="#resultados">Missões 2 a 7 – Resultados</a></li>
       <li><a href="#identidade">Identidade visual das equipes</a></li>
       <li><a href="#atualizar">Atualizar o painel durante a gincana</a></li>
       <li><a href="#final">Resultado Final</a></li>
@@ -175,7 +175,7 @@ verde;Felipe Costa;Líder</pre>
   <p><code>equipe</code> é o <code>id</code> da equipe; <code>funcao</code> é <strong>Líder</strong> ou <strong>Membro</strong>. Apague os nomes de exemplo e coloque os reais.</p>
 
   <h2 id="missoes"><span class="n">5</span>Conferir missões e pontos</h2>
-  <p><code>dados/missoes.csv</code> já vem com as 6 missões. Normalmente você só precisa conferir os pontos.</p>
+  <p><code>dados/missoes.csv</code> já vem com as 7 missões. Normalmente você só precisa conferir os pontos.</p>
   <div class="tabela"><table>
     <thead><tr><th>Missão</th><th>tipo</th><th>pontos_1 (1º)</th><th>pontos_2 (2º)</th></tr></thead>
     <tbody>
@@ -185,6 +185,7 @@ verde;Felipe Costa;Líder</pre>
       <tr><td>4 – Grito de Guerra</td><td>colocacao</td><td>100</td><td>50</td></tr>
       <tr><td>5 – Queimada</td><td>colocacao</td><td>100</td><td>50</td></tr>
       <tr><td>6 – Circuito</td><td>colocacao</td><td>500</td><td>0</td></tr>
+      <tr><td>7 – Dinâmica</td><td>colocacao</td><td>100</td><td>50</td></tr>
     </tbody>
   </table></div>
   <p>Para mudar um valor, altere <code>pontos_1</code>/<code>pontos_2</code>. Também dá para mudar <code>nome</code>, <code>descricao</code> e <code>julgamento</code> (texto exibido no painel).
@@ -209,7 +210,7 @@ verde;Leite;2;Entrega da segunda rodada</pre>
   </ul>
   <figure><img src="guia/img/03-arrecadacao.png" alt="Detalhamento da arrecadação"><figcaption>Como a Missão 1 aparece no painel.</figcaption></figure>
 
-  <h2 id="resultados"><span class="n">7</span>Missões 2 a 6 – Lançar resultados</h2>
+  <h2 id="resultados"><span class="n">7</span>Missões 2 a 7 – Lançar resultados</h2>
   <p>Assim que os jurados (ou o jogo) definirem o resultado, lance em <code>dados/resultados.csv</code> <strong>duas linhas por missão</strong>, uma para cada equipe:</p>
   <pre>missao;equipe;colocacao;observacao
 4;verde;1;Decisão dos jurados

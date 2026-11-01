@@ -47,7 +47,7 @@ em `equipes.csv`. O nome, a cor e o logo passam a identificar a equipe no painel
 - Opcional: `pontos_1` da missão 1 em `missoes.csv` vira um bônus para a equipe vencedora da arrecadação (está 0).
 - O nome do alimento precisa ser igual ao de `alimentos.csv` (maiúsculas e acentos não importam). Se não for, o painel mostra um aviso.
 
-### Missões 2 a 6 – Colocação
+### Missões 2 a 7 – Colocação
 Lance em `resultados.csv` a colocação (1 ou 2) de cada equipe. Os pontos vêm de `pontos_1`/`pontos_2`
 de `missoes.csv`:
 
@@ -58,6 +58,7 @@ de `missoes.csv`:
 | 4 – Grito de Guerra (jurados) | 100 | 50 |
 | 5 – Queimada | 100 | 50 |
 | 6 – Circuito | 500 | 0 |
+| 7 – Dinâmica (jurados) | 100 | 50 |
 
 \* A pontuação da Missão 3 não foi definida; ajuste em `missoes.csv` se necessário.
 
