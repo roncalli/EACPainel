@@ -1,9 +1,10 @@
 alimento;unidade;pontos_por_unidade
-Arroz5kg;1;5
-Feijão1kg;1;1
-ÓleoDeSoja;1;1
-Leite;1;1
-Açúcar1kg;1;1
-Macarrão500g;1;0.5
-Café500g;1;0.5
-Enlatados;1;0.5
+Arroz5kg;pacote;5
+Feijão1kg;pacote;1
+ÓleoDeSoja;lata 900 ml;1
+Leite;Caixa 1L;1
+Açúcar5kg;pacote;5
+Macarrão500g;pacote;0.5
+Café500g;pacote;0.5
+Enlatados;lata;0.5
+Biscoitos;Kg;1
