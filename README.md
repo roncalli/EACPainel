@@ -1,6 +1,6 @@
 # Painel da Gincana – EAC Barbacena
 
-Painel em HTML (arquivo único, sem instalação) que mostra o placar da gincana do EAC Barbacena (Encontro de Adolescentes com Cristo),
+Painel em HTML (sem instalação) que mostra o placar da gincana do EAC Barbacena (Encontro de Adolescentes com Cristo),
 a composição das equipes e o **detalhamento de cada ponto** de cada missão.
 Tudo é alimentado por arquivos CSV na pasta `dados/`.
 
@@ -8,23 +8,30 @@ Tudo é alimentado por arquivos CSV na pasta `dados/`.
 
 ## Como abrir
 
-**Opção 1 – direto no navegador (sem internet nem servidor)**
-1. Dê dois cliques em `index.html`.
-2. Clique em **Carregar CSVs** e selecione os 6 arquivos da pasta `dados/` (ou arraste-os).
-3. Sempre que alterar um CSV, carregue-o de novo (pode carregar só o arquivo alterado).
+O painel tem duas páginas, que compartilham `painel.js` e `painel.css`:
 
-**Opção 2 – com servidor local (atualiza sozinho a cada 30 s, ideal para o telão)**
+- **Painel público** (`index.html`) – https://roncalli.github.io/EACPainel/
+  Mostra o placar lendo sempre os CSVs publicados em `dados/`. Não tem botões de carregar/limpar.
+  Relê os dados a cada 30 s. Para atualizar, edite o CSV no GitHub (pasta `dados/` → lápis → *Commit changes*);
+  em 1 a 2 minutos o site é republicado.
+- **Área de gestão** (endereço e acesso com a coordenação) – exige login e oferece **Carregar CSVs**,
+  **Limpar CSVs** e atalhos para editar cada CSV no GitHub. Os arquivos carregados ali são só uma
+  pré-visualização local (ou uso sem internet): não mudam o que o público vê.
+
+### Sobre o login
+O código guarda apenas um hash PBKDF2-SHA256 (310 mil iterações, com sal) de usuário e senha — as credenciais
+não aparecem em nenhum arquivo. Como o GitHub Pages é estático, o login esconde as ferramentas de gestão,
+mas a proteção real dos dados é a permissão de escrita no repositório do GitHub.
+
+Para trocar a senha, gere um novo hash e substitua `ACESSO` em `painel.js`:
 ```bash
-cd EACPainel
-python3 -m http.server 8000
+node -e 'const c=require("crypto"),s=c.randomBytes(16).toString("hex");console.log(s,c.pbkdf2Sync("USUARIO\nSENHA",Buffer.from(s,"hex"),310000,32,"sha256").toString("hex"))'
 ```
-Abra `http://localhost:8000`. Basta salvar o CSV e o painel se atualiza.
-> Se você tiver carregado CSVs manualmente antes, clique em **Limpar CSVs** para voltar a ler a pasta `dados/`.
+(o usuário vai em minúsculas; a saída é `sal hash`).
 
-**Opção 3 – online pelo GitHub Pages**
-Endereço: https://roncalli.github.io/EACPainel/
-Edite o CSV direto no GitHub (abra o arquivo em `dados/` → ícone de lápis → *Commit changes*).
-Em 1 a 2 minutos o site é republicado e o painel aberto se atualiza sozinho (relê os dados a cada 30 s).
+### Sem internet
+Descompacte o pacote, abra a página de gestão, faça login e carregue os 6 CSVs da pasta `dados/`.
+(O `index.html` aberto direto do computador não consegue ler a pasta e mostra “Painel indisponível”.)
 
 Os CSVs podem ser editados no Excel/LibreOffice/Google Planilhas. O separador pode ser
 `;` ou `,` e números aceitam vírgula decimal. **Não renomeie os arquivos.**
@@ -85,8 +92,8 @@ quem venceu foi a solidariedade (com o total de alimentos arrecadados), todos os
 e Cristo, além das passagens bíblicas (1Tm 4,12; Mt 25,40; Mt 5,16; Mt 18,20). O placar oficial
 aparece discretamente para registro, e o botão **Voltar ao painel** retorna ao placar.
 
-Os textos da mensagem ficam na função `paginaFinal` do `index.html`. Confira a redação dos
+Os textos da mensagem ficam na função `paginaFinal` do `painel.js`. Confira a redação dos
 versículos com a edição da Bíblia usada pelo grupo.
 
-Para testar a página antes do evento, carregue `dados/exemplos/resultados.csv` (todas as missões concluídas)
-pelo botão **Carregar CSVs**; depois clique em **Limpar CSVs** para voltar.
+Para testar a página antes do evento, na área de gestão carregue `dados/exemplos/resultados.csv`
+(todas as missões concluídas) pelo botão **Carregar CSVs**; depois clique em **Limpar CSVs** para voltar.
