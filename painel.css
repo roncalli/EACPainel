@@ -158,30 +158,9 @@
   #carregar {
     max-width: 640px; margin: 40px auto; text-align: center;
   }
-  #drop {
-    border: 2px dashed var(--line); border-radius: var(--radius); padding: 30px; margin-top: 16px;
-  }
-  #drop.over { border-color: var(--muted); background: var(--card); }
   code { background: var(--line); padding: 1px 5px; border-radius: 5px; font-size: .85em; }
   .hidden { display: none !important; }
 
-  /* Área de gestão */
-  .login { max-width: 380px; margin: 40px auto; display: grid; gap: 12px; }
-  .login h2 { margin-bottom: 0; }
-  .login p { margin: 0; }
-  .login label { display: grid; gap: 4px; font-size: .9rem; font-weight: 600; }
-  .login input {
-    font: inherit; padding: 10px 12px; border-radius: 10px;
-    border: 1px solid var(--line); background: var(--bg); color: var(--text);
-  }
-  .login input:focus { outline: 2px solid var(--brand); outline-offset: 1px; }
-  .login .btn-final { font-size: 1rem; padding: 12px; }
-  .erro { color: var(--brand-text); font-size: .9rem; min-height: 1.2em; }
-  .gestao { border-left: 6px solid var(--brand); margin-bottom: 24px; display: grid; gap: 8px; }
-  .gestao p { margin: 4px 0 10px; }
-  .links-edicao { display: flex; flex-wrap: wrap; gap: 8px; }
-  .links-edicao .btn { text-decoration: none; font-size: .85rem; padding: 6px 12px; }
-  #fonte { margin: 0; }
 
   /* Botão Resultado Final */
   .finalizar { text-align: center; padding: 8px 0 0; }

@@ -1,19 +1,5 @@
-// Página pública (index.html) ou área de gestão (página protegida por login).
-const MODO = document.body.dataset.modo === 'gestao' ? 'gestao' : 'publico';
-const GESTAO = MODO === 'gestao';
-const REPO_EDICAO = 'https://github.com/roncalli/EACPainel/edit/ccr-71e1c483-1x3tj2/dados/';
-
-// Acesso à gestão: guarda só o hash PBKDF2 de "usuário\nsenha", nunca as credenciais.
-const ACESSO = {
-  sal: 'eccf10b41f33527848620fc102dba444',
-  iteracoes: 310000,
-  hash: '5659faa4c50986318a84a8d8960037d3ea1ca7313c4a4fac0956ec1e731f745d',
-};
-const CHAVE_SESSAO = 'eac-gestao-sessao';
-
 const ARQUIVOS = ['equipes', 'integrantes', 'missoes', 'alimentos', 'arrecadacao', 'resultados'];
 const OBRIGATORIOS = ['equipes', 'missoes'];
-const CHAVE_STORAGE = 'ejc-painel-csv';
 const INTERVALO_ATUALIZACAO = 30000;
 
 // ---------- Utilidades ----------
@@ -67,17 +53,6 @@ function decodificar(buffer) {
   catch { return new TextDecoder('windows-1252').decode(buffer); }
 }
 
-// CSVs enviados manualmente: ficam em memória e, quando possível, no navegador.
-let enviados = {};
-function lerGuardados() {
-  if (!GESTAO) return {}; // o painel público mostra sempre os dados publicados
-  try { return { ...JSON.parse(localStorage.getItem(CHAVE_STORAGE)), ...enviados }; } catch { return enviados; }
-}
-function guardar(textos) {
-  enviados = textos;
-  try { localStorage.setItem(CHAVE_STORAGE, JSON.stringify(textos)); } catch {}
-}
-
 async function buscarDaPasta() {
   const textos = {};
   if (!location.protocol.startsWith('http')) return textos;
@@ -104,8 +79,7 @@ function mostrarTela() {
 }
 
 async function carregar() {
-  const daPasta = await buscarDaPasta();
-  const textos = { ...daPasta, ...lerGuardados() };
+  const textos = await buscarDaPasta();
   const faltando = OBRIGATORIOS.filter(n => !textos[n]);
   document.getElementById('carregar').classList.toggle('hidden', !faltando.length);
   if (faltando.length) {
@@ -118,23 +92,8 @@ async function carregar() {
   ultimo = calcular(dados);
   renderizar(ultimo);
   mostrarTela();
-  if (GESTAO) mostrarFonte(daPasta);
   document.getElementById('atualizado').textContent =
     'Encontro de Adolescentes com Cristo · atualizado às ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-}
-
-async function receberArquivos(lista) {
-  const textos = lerGuardados();
-  const ignorados = [];
-  for (const arq of lista) {
-    const nome = normalizar(arq.name).replace(/\.csv$/, '');
-    if (ARQUIVOS.includes(nome)) textos[nome] = decodificar(await arq.arrayBuffer());
-    else ignorados.push(arq.name);
-  }
-  guardar(textos);
-  if (ignorados.length) alert('Arquivos ignorados (nome não reconhecido):\n' + ignorados.join('\n') +
-    '\n\nNomes esperados: ' + ARQUIVOS.map(n => n + '.csv').join(', '));
-  carregar();
 }
 
 // ---------- Cálculo ----------
@@ -445,168 +404,19 @@ function paginaFinal(r) {
     <div class="final-acoes"><button type="button" id="voltar-painel">Voltar ao painel</button></div>`;
 }
 
-// ---------- Área de gestão ----------
+// ---------- Eventos ----------
 
-function mostrarFonte(daPasta) {
-  const locais = Object.keys(lerGuardados());
-  const el = document.getElementById('fonte');
-  el.innerHTML = locais.length
-    ? `<strong>Pré-visualização local:</strong> usando ${locais.map(n => `<code>${esc(n)}.csv</code>`).join(', ')} carregado(s) neste navegador${Object.keys(daPasta).length ? ' no lugar dos dados publicados' : ''}. O público não vê estas alterações.`
-    : (Object.keys(daPasta).length ? '<strong>Exibindo os dados publicados</strong> (os mesmos do painel público).' : '');
-}
+document.getElementById('recarregar').addEventListener('click', carregar);
+document.getElementById('telao').addEventListener('click', () => {
+  if (document.fullscreenElement) document.exitFullscreen();
+  else document.documentElement.requestFullscreen?.();
+});
+document.getElementById('btn-final').addEventListener('click', () => { location.hash = ROTA_FINAL; scrollTo(0, 0); });
+document.getElementById('final').addEventListener('click', ev => {
+  if (ev.target.id === 'voltar-painel') { history.pushState('', '', location.pathname + location.search); mostrarTela(); scrollTo(0, 0); }
+});
+window.addEventListener('hashchange', mostrarTela);
 
-const hex = buf => [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
-async function derivar(usuario, senha) {
-  const enc = new TextEncoder();
-  const chave = await crypto.subtle.importKey('raw', enc.encode(`${usuario.trim().toLowerCase()}\n${senha}`), 'PBKDF2', false, ['deriveBits']);
-  const sal = new Uint8Array(ACESSO.sal.match(/../g).map(h => parseInt(h, 16)));
-  return hex(await crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt: sal, iterations: ACESSO.iteracoes }, chave, 256));
-}
-const sessaoValida = () => { try { return sessionStorage.getItem(CHAVE_SESSAO) === ACESSO.hash; } catch { return false; } };
-
-const PAINEL_HTML = `  <div id="painel" class="hidden">
-    <div id="avisos"></div>
-
-    <section>
-      <h2>Placar geral</h2>
-      <div id="placar"></div>
-    </section>
-
-    <section>
-      <h2>Pontuação por missão</h2>
-      <div class="card tabela-scroll" id="resumo"></div>
-    </section>
-
-    <section>
-      <h2>Detalhamento das missões</h2>
-      <div class="grid-missoes" id="missoes"></div>
-    </section>
-
-    <section>
-      <h2>Composição das equipes</h2>
-      <div class="grid-equipes" id="equipes"></div>
-    </section>
-
-    <section>
-      <h2>Extrato de pontos</h2>
-      <p class="muted small">Cada linha abaixo é um lançamento que compõe o placar. A soma de cada equipe é igual ao total do placar geral.</p>
-      <div class="card tabela-scroll" id="extrato"></div>
-    </section>
-
-    <section class="finalizar">
-      <button id="btn-final" class="btn-final" type="button" disabled>Resultado Final</button>
-      <p id="status-final" class="muted small"></p>
-    </section>
-  </div>
-
-  <div id="final" class="hidden"></div>
-`;
-
-const LOGIN_HTML = `
-  <form id="login" class="card login" autocomplete="on">
-    <h2>Área de gestão</h2>
-    <p class="muted small">Acesso restrito à coordenação da gincana.</p>
-    <label>Usuário<input name="usuario" autocomplete="username" required></label>
-    <label>Senha<input name="senha" type="password" autocomplete="current-password" required></label>
-    <button type="submit" class="btn-final">Entrar</button>
-    <p id="login-erro" class="erro" role="alert"></p>
-  </form>`;
-
-const CARREGAR_HTML = GESTAO ? `
-  <div id="carregar" class="card hidden">
-    <h2>Carregue os arquivos do painel</h2>
-    <p class="muted">Selecione (ou arraste para cá) os 6 arquivos CSV da pasta <code>dados</code>:
-      <code>equipes.csv</code>, <code>integrantes.csv</code>, <code>missoes.csv</code>,
-      <code>alimentos.csv</code>, <code>arrecadacao.csv</code> e <code>resultados.csv</code>.</p>
-    <div id="drop">
-      <label class="btn" for="arquivos">Escolher arquivos</label>
-      <p class="muted small">Os arquivos ficam guardados neste navegador até você clicar em “Limpar CSVs”.</p>
-    </div>
-  </div>` : `
-  <div id="carregar" class="card hidden">
-    <h2>Painel indisponível no momento</h2>
-    <p class="muted">Não foi possível ler os dados da gincana. Verifique a conexão e clique em <strong>Atualizar</strong>.</p>
-  </div>`;
-
-const GESTAO_HTML = `
-  <div class="gestao card">
-    <div>
-      <strong>Área de gestão</strong>
-      <p class="small muted">Os CSVs carregados aqui servem para pré-visualizar ou usar o painel sem internet, e só mudam este navegador.
-        Para atualizar o <strong>painel público</strong>, edite os arquivos no GitHub:</p>
-      <div class="links-edicao">${ARQUIVOS.map(n => `<a class="btn" href="${REPO_EDICAO}${n}.csv" target="_blank" rel="noopener">${n}.csv</a>`).join('')}</div>
-    </div>
-    <p id="fonte" class="small"></p>
-  </div>`;
-
-function montarApp() {
-  const acoes = document.querySelector('header .actions');
-  const main = document.querySelector('main');
-  if (GESTAO && !sessaoValida()) {
-    acoes.innerHTML = '';
-    main.innerHTML = LOGIN_HTML;
-    const form = document.getElementById('login');
-    form.addEventListener('submit', async ev => {
-      ev.preventDefault();
-      const erro = document.getElementById('login-erro');
-      erro.textContent = 'Verificando…';
-      try {
-        if (await derivar(form.usuario.value, form.senha.value) !== ACESSO.hash) {
-          erro.textContent = 'Usuário ou senha incorretos.';
-          form.senha.value = '';
-          return;
-        }
-        try { sessionStorage.setItem(CHAVE_SESSAO, ACESSO.hash); } catch {}
-        montarApp();
-      } catch {
-        erro.textContent = 'Este navegador não permite o login. Use Chrome, Edge ou Firefox atualizados.';
-      }
-    });
-    return;
-  }
-
-  acoes.innerHTML = (GESTAO ? `
-    <label class="btn" for="arquivos">Carregar CSVs</label>
-    <input type="file" id="arquivos" accept=".csv,text/csv" multiple class="hidden">
-    <button id="limpar" type="button" title="Esquecer os CSVs carregados neste navegador">Limpar CSVs</button>` : '') + `
-    <button id="recarregar" type="button">Atualizar</button>
-    <button id="telao" type="button">Tela cheia</button>` +
-    (GESTAO ? `<button id="sair" type="button">Sair</button>` : '');
-  main.innerHTML = (GESTAO ? GESTAO_HTML : '') + CARREGAR_HTML + PAINEL_HTML;
-
-  document.getElementById('recarregar').addEventListener('click', carregar);
-  document.getElementById('telao').addEventListener('click', () => {
-    if (document.fullscreenElement) document.exitFullscreen();
-    else document.documentElement.requestFullscreen?.();
-  });
-  document.getElementById('btn-final').addEventListener('click', () => { location.hash = ROTA_FINAL; scrollTo(0, 0); });
-  document.getElementById('final').addEventListener('click', ev => {
-    if (ev.target.id === 'voltar-painel') { history.pushState('', '', location.pathname + location.search); mostrarTela(); scrollTo(0, 0); }
-  });
-  window.addEventListener('hashchange', mostrarTela);
-
-  if (GESTAO) {
-    document.getElementById('arquivos').addEventListener('change', ev => { receberArquivos([...ev.target.files]); ev.target.value = ''; });
-    document.getElementById('limpar').addEventListener('click', () => {
-      enviados = {};
-      try { localStorage.removeItem(CHAVE_STORAGE); } catch {}
-      carregar();
-    });
-    document.getElementById('sair').addEventListener('click', () => {
-      try { sessionStorage.removeItem(CHAVE_SESSAO); } catch {}
-      montarApp();
-    });
-    const drop = document.getElementById('drop');
-    ['dragenter', 'dragover'].forEach(t => drop.addEventListener(t, ev => { ev.preventDefault(); drop.classList.add('over'); }));
-    ['dragleave', 'drop'].forEach(t => drop.addEventListener(t, ev => { ev.preventDefault(); drop.classList.remove('over'); }));
-    drop.addEventListener('drop', ev => receberArquivos([...ev.dataTransfer.files]));
-  }
-
-  carregar();
-  // Quando servido por HTTP, relê a pasta dados/ periodicamente (útil no telão).
-  if (location.protocol.startsWith('http') && !montarApp.timer) {
-    montarApp.timer = setInterval(() => { if (document.getElementById('painel')) carregar(); }, INTERVALO_ATUALIZACAO);
-  }
-}
-
-montarApp();
+carregar();
+// Relê os CSVs publicados periodicamente (útil no telão).
+setInterval(carregar, INTERVALO_ATUALIZACAO);

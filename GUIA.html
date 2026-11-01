@@ -87,9 +87,9 @@
   <nav class="indice">
     <strong>Neste guia</strong>
     <ol>
-      <li><a href="#pacote">O que vem no pacote</a></li>
+      <li><a href="#pacote">Como o painel funciona</a></li>
       <li><a href="#abrir">Abrir o painel</a></li>
-      <li><a href="#planilhas">Como editar os arquivos CSV</a></li>
+      <li><a href="#planilhas">Como editar os CSVs no GitHub</a></li>
       <li><a href="#equipes">Cadastrar equipes e integrantes</a></li>
       <li><a href="#missoes">Conferir missões e pontos</a></li>
       <li><a href="#alimentos">Missão 1 – Alimentos</a></li>
@@ -102,73 +102,60 @@
     </ol>
   </nav>
 
-  <h2 id="pacote"><span class="n">1</span>O que vem no pacote</h2>
+  <h2 id="pacote"><span class="n">1</span>Como o painel funciona</h2>
+  <p>O painel fica publicado no <strong>GitHub Pages</strong> e é usado totalmente online:</p>
+  <ul>
+    <li><strong>Endereço do painel:</strong> <a href="https://roncalli.github.io/EACPainel/">roncalli.github.io/EACPainel</a> — abre em qualquer computador, telão ou celular.</li>
+    <li><strong>Dados:</strong> ficam nos arquivos CSV da pasta <code>dados/</code> do repositório <a href="https://github.com/roncalli/EACPainel">github.com/roncalli/EACPainel</a>.</li>
+    <li><strong>Para atualizar:</strong> edite o CSV no GitHub. Em 1 a 2 minutos o site é republicado e o painel aberto se atualiza sozinho.</li>
+  </ul>
   <div class="tabela"><table>
     <thead><tr><th>Arquivo / pasta</th><th>Para que serve</th></tr></thead>
     <tbody>
-      <tr><td><code>index.html</code></td><td>O painel público (placar). Só lê os dados publicados.</td></tr>
-      <tr><td>Página de gestão</td><td>Área restrita, com login, para carregar CSVs (pré-visualização e uso sem internet). O endereço e o acesso são passados pela coordenação.</td></tr>
-      <tr><td><code>painel.js</code> / <code>painel.css</code></td><td>Código e aparência do painel (usados pelas duas páginas).</td></tr>
-      <tr><td><code>GUIA.html</code> / <code>GUIA.pdf</code></td><td>Este guia (o PDF é a versão para imprimir).</td></tr>
       <tr><td><code>dados/</code></td><td>Os 6 arquivos CSV com as informações da gincana (é aqui que você mexe).</td></tr>
       <tr><td><code>dados/logos/</code></td><td>Onde colocar as imagens das equipes (identidade visual).</td></tr>
-      <tr><td><code>dados/exemplos/resultados.csv</code></td><td>Arquivo de teste com todas as missões concluídas, para ver a página de Resultado Final.</td></tr>
+      <tr><td><code>dados/exemplos/resultados.csv</code></td><td>Resultados de exemplo com todas as missões concluídas, para ensaiar a página de Resultado Final.</td></tr>
+      <tr><td><code>index.html</code>, <code>painel.js</code>, <code>painel.css</code></td><td>O painel em si (estrutura, código e aparência).</td></tr>
       <tr><td><code>assets/</code></td><td>Logo do EAC usado no cabeçalho.</td></tr>
-      <tr><td><code>README.md</code></td><td>Resumo técnico do projeto.</td></tr>
+      <tr><td><code>GUIA.html</code> / <code>GUIA.pdf</code></td><td>Este guia (o PDF é a versão para imprimir).</td></tr>
     </tbody>
   </table></div>
-  <div class="atencao"><strong>Importante</strong>Mantenha os arquivos sempre juntos, nesta mesma estrutura de pastas, e não renomeie os CSVs.</div>
+  <div class="atencao"><strong>Importante</strong>Não renomeie nem mova os CSVs e mantenha a primeira linha (cabeçalho) de cada um.</div>
 
   <h2 id="abrir"><span class="n">2</span>Abrir o painel</h2>
-  <p>O painel tem duas páginas:</p>
-  <div class="tabela"><table>
-    <thead><tr><th>Página</th><th>Quem usa</th><th>O que tem</th></tr></thead>
-    <tbody>
-      <tr><td><strong>Painel público</strong><br><a href="https://roncalli.github.io/EACPainel/">roncalli.github.io/EACPainel</a></td><td>Todos (telão, celulares)</td><td>Placar, missões, equipes, extrato e Resultado Final. Botões <strong>Atualizar</strong> e <strong>Tela cheia</strong>.</td></tr>
-      <tr><td><strong>Área de gestão</strong><br>(endereço e login com a coordenação)</td><td>Coordenação</td><td>O mesmo painel, mais <strong>Carregar CSVs</strong>, <strong>Limpar CSVs</strong>, <strong>Sair</strong> e atalhos para editar cada CSV no GitHub.</td></tr>
-    </tbody>
-  </table></div>
-  <figure><img src="guia/img/01-painel.png" alt="Painel com placar"><figcaption>Painel público: placar geral e pontuação por missão.</figcaption></figure>
-
-  <h3>Com internet (recomendado)</h3>
-  <p>Abra o endereço do painel público no navegador do telão e clique em <strong>Tela cheia</strong>. Os dados vêm direto do GitHub e são relidos a cada 30 segundos.</p>
-
-  <h3>Sem internet (pelo pacote .zip)</h3>
   <ol class="passos">
-    <li>Descompacte o arquivo <code>.zip</code> em uma pasta do computador (por exemplo, na Área de Trabalho).<br>
-      <span class="muted">No Windows: clique com o botão direito no zip → <em>Extrair tudo</em>. Não abra o painel de dentro do zip.</span></li>
-    <li>Abra a <strong>página de gestão</strong> da pasta (dois cliques) e entre com o usuário e a senha da coordenação.</li>
-    <li>Aparece a tela abaixo. Clique em <strong>Escolher arquivos</strong>, entre na pasta <code>dados</code>, selecione os <strong>6 arquivos CSV</strong> de uma vez (<kbd>Ctrl</kbd>+<kbd>A</kbd>) e confirme. Também dá para arrastar os arquivos para o quadro tracejado.</li>
+    <li>No computador do telão, abra <a href="https://roncalli.github.io/EACPainel/">roncalli.github.io/EACPainel</a> no Chrome, Edge ou Firefox.</li>
+    <li>Clique em <strong>Tela cheia</strong> (<kbd>Esc</kbd> sai).</li>
+    <li>Pronto: o painel relê os dados a cada 30 segundos. Não é preciso mexer no telão durante a gincana.</li>
   </ol>
-  <figure><img src="guia/img/00-carregar.png" alt="Tela pedindo os arquivos CSV"><figcaption>Área de gestão sem dados: pedindo os arquivos CSV.</figcaption></figure>
-  <div class="atencao"><strong>Por que não o <code>index.html</code>?</strong>Aberto direto do computador, o painel público não consegue ler a pasta <code>dados</code> e mostra “Painel indisponível”. Sem internet, use a área de gestão.</div>
-
-  <h3>Botões</h3>
-  <figure><img src="guia/img/02-botoes.png" alt="Cabeçalho com os botões"><figcaption>Cabeçalho da área de gestão.</figcaption></figure>
+  <figure><img src="guia/img/01-painel.png" alt="Painel com placar"><figcaption>Topo do painel: placar geral e pontuação por missão.</figcaption></figure>
+  <figure><img src="guia/img/02-botoes.png" alt="Cabeçalho com os botões"><figcaption>Cabeçalho com os botões Atualizar e Tela cheia.</figcaption></figure>
   <div class="tabela"><table>
-    <thead><tr><th>Botão</th><th>Onde</th><th>O que faz</th></tr></thead>
+    <thead><tr><th>Botão</th><th>O que faz</th></tr></thead>
     <tbody>
-      <tr><td><strong>Atualizar</strong></td><td>Público e gestão</td><td>Relê os dados e redesenha o painel.</td></tr>
-      <tr><td><strong>Tela cheia</strong></td><td>Público e gestão</td><td>Ocupa a tela toda — ideal para o telão/projetor. <kbd>Esc</kbd> sai.</td></tr>
-      <tr><td><strong>Carregar CSVs</strong></td><td>Gestão</td><td>Usa arquivos do computador. Pode mandar só os que mudaram. <strong>Muda só este navegador</strong> — o público continua vendo os dados do GitHub.</td></tr>
-      <tr><td><strong>Limpar CSVs</strong></td><td>Gestão</td><td>Esquece os arquivos carregados e volta a mostrar os dados publicados.</td></tr>
-      <tr><td><strong>Sair</strong></td><td>Gestão</td><td>Encerra o acesso. Fechar a aba também encerra.</td></tr>
+      <tr><td><strong>Atualizar</strong></td><td>Relê os dados na hora, sem esperar os 30 segundos.</td></tr>
+      <tr><td><strong>Tela cheia</strong></td><td>Ocupa a tela toda — ideal para o telão/projetor.</td></tr>
     </tbody>
   </table></div>
-  <div class="dica"><strong>Dica</strong>A área de gestão avisa no topo se está mostrando os <em>dados publicados</em> ou uma <em>pré-visualização local</em>.</div>
 
-  <h2 id="planilhas"><span class="n">3</span>Como editar os arquivos CSV</h2>
-  <p>CSV é uma planilha simples. Você pode abrir e editar no <strong>Excel</strong>, <strong>LibreOffice Calc</strong> ou <strong>Google Planilhas</strong>.</p>
+  <h2 id="planilhas"><span class="n">3</span>Como editar os arquivos CSV no GitHub</h2>
+  <p>É preciso estar logado no GitHub com uma conta que tenha permissão no repositório.</p>
+  <h3>Jeito rápido: direto no navegador</h3>
   <ol class="passos">
-    <li>Abra o arquivo (no Excel: <em>Arquivo → Abrir</em> e escolha o CSV).</li>
-    <li>Edite as linhas. <strong>Não mude a primeira linha</strong> (cabeçalho com os nomes das colunas).</li>
-    <li>Salve mantendo o formato CSV: no Excel, <em>Salvar</em> e, se perguntar, escolha <strong>Manter o formato atual</strong>
-      (ou <em>Salvar como → CSV UTF-8</em>). No Google Planilhas: <em>Arquivo → Fazer download → Valores separados por vírgula (.csv)</em> e renomeie para o nome original.</li>
-    <li>Publique no GitHub (veja a seção 9) ou, sem internet, carregue o arquivo na área de gestão.</li>
+    <li>Abra <a href="https://github.com/roncalli/EACPainel/tree/ccr-71e1c483-1x3tj2/dados">a pasta <code>dados</code> no GitHub</a> e clique no arquivo (ex.: <code>resultados.csv</code>).</li>
+    <li>Clique no ícone de <strong>lápis</strong> (<em>Edit this file</em>).</li>
+    <li>Edite as linhas, com os campos separados por <code>;</code>. <strong>Não mude a primeira linha.</strong></li>
+    <li>Clique em <strong>Commit changes…</strong> e confirme em <strong>Commit changes</strong>.</li>
+    <li>Em 1 a 2 minutos o painel mostra a alteração.</li>
+  </ol>
+  <h3>Pelo Excel / Google Planilhas</h3>
+  <ol class="passos">
+    <li>Edite o arquivo e salve como CSV (no Excel: <em>Salvar como → CSV UTF-8</em>; no Google Planilhas: <em>Arquivo → Fazer download → .csv</em>).</li>
+    <li>Confira se o nome do arquivo é exatamente o original (ex.: <code>arrecadacao.csv</code>, sem “(1)” ou “dados - ”).</li>
+    <li>No GitHub, abra a pasta <code>dados</code>, clique em <strong>Add file → Upload files</strong>, arraste o arquivo e clique em <strong>Commit changes</strong>. Ele substitui o anterior.</li>
   </ol>
   <div class="dica"><strong>Pode ficar tranquilo com</strong>
     separador <code>;</code> ou <code>,</code>, número com vírgula (<code>2,5</code>), maiúsculas/minúsculas e acentos nos nomes de equipe e alimento — o painel entende todos.</div>
-  <div class="atencao"><strong>Atenção ao Google Planilhas</strong>Ao baixar, o nome vem como <code>dados - arrecadacao.csv</code>. Renomeie para <code>arrecadacao.csv</code>, senão o painel não reconhece.</div>
 
   <h2 id="equipes"><span class="n">4</span>Cadastrar equipes e integrantes</h2>
   <h3><code>dados/equipes.csv</code> — uma linha por equipe</h3>
@@ -243,24 +230,18 @@ verde;Leite;2;Entrega da segunda rodada</pre>
   <h2 id="identidade"><span class="n">8</span>Identidade visual das equipes (após a Missão 2)</h2>
   <ol class="passos">
     <li>Tire uma foto ou salve a imagem criada por cada equipe (de preferência quadrada, <code>.png</code> ou <code>.jpg</code>).</li>
-    <li>Coloque as imagens na pasta <code>dados/logos/</code>, por exemplo <code>azul.png</code> e <code>verde.png</code>.</li>
+    <li>No GitHub, abra a pasta <code>dados/logos/</code>, clique em <strong>Add file → Upload files</strong> e envie as imagens (por exemplo <code>azul.png</code> e <code>verde.png</code>). Clique em <strong>Commit changes</strong>.</li>
     <li>Em <code>equipes.csv</code>, preencha a coluna <code>logo</code> com <code>dados/logos/azul.png</code> (e o da outra equipe).</li>
     <li>Se a equipe escolheu um novo nome ou grito de guerra, atualize <code>nome</code> e <code>grito_de_guerra</code>. Para ajustar o tom da cor, mude <code>cor_hex</code>.</li>
-    <li>Carregue o <code>equipes.csv</code> no painel. O logo substitui a letra em todo o painel.</li>
+    <li>Salve com <strong>Commit changes</strong>. Em 1 a 2 minutos o logo substitui a letra em todo o painel.</li>
   </ol>
   <div class="atencao"><strong>Não mude o <code>id</code></strong>Mesmo que a equipe ganhe um nome novo, o <code>id</code> (<code>azul</code>, <code>verde</code>) continua o mesmo, senão os lançamentos deixam de ser reconhecidos.</div>
 
   <h2 id="atualizar"><span class="n">9</span>Atualizar o painel durante a gincana</h2>
-  <h3>Com internet: editar no GitHub (atualiza o painel público)</h3>
   <ol class="passos">
-    <li>Na área de gestão, clique no atalho do CSV que quer alterar (ou, no GitHub, abra a pasta <code>dados</code> e o arquivo). É preciso estar logado no GitHub com permissão no repositório.</li>
+    <li>No GitHub, abra a pasta <code>dados</code> e o CSV que quer alterar (veja a seção 3).</li>
     <li>Clique no ícone de <strong>lápis</strong> (<em>Edit this file</em>), faça a alteração e clique em <strong>Commit changes</strong>.</li>
     <li>Em 1 a 2 minutos o site é republicado. O painel aberto relê os dados a cada 30 segundos — não precisa fazer nada no telão.</li>
-  </ol>
-  <h3>Sem internet: área de gestão</h3>
-  <ol class="passos">
-    <li>Edite e salve o CSV no computador.</li>
-    <li>Na área de gestão, clique em <strong>Carregar CSVs</strong> e escolha <strong>só o arquivo alterado</strong>. O placar é recalculado na hora.</li>
   </ol>
   <div class="atencao"><strong>O site é público</strong>Qualquer pessoa com o endereço consegue ver o painel, inclusive os nomes dos integrantes.</div>
   <div class="dica"><strong>No telão</strong>Use <strong>Tela cheia</strong>. Deixe uma pessoa responsável pelos lançamentos em outro computador ou no mesmo, fora da projeção, para não mostrar as planilhas ao público.</div>
@@ -275,43 +256,42 @@ verde;Leite;2;Entrega da segunda rodada</pre>
     <li>O botão <strong>Voltar ao painel</strong> retorna ao placar.</li>
   </ol>
   <figure><img src="guia/img/06-final.png" alt="Página de resultado final"><figcaption>Página de encerramento (com os dados de exemplo).</figcaption></figure>
-  <div class="dica"><strong>Quer ensaiar antes?</strong>Na área de gestão, clique em <strong>Carregar CSVs</strong> e escolha <code>dados/exemplos/resultados.csv</code>. O botão é liberado só no seu navegador. Depois clique em <strong>Limpar CSVs</strong> para voltar aos dados publicados.</div>
+  <div class="dica"><strong>Quer ensaiar antes?</strong>Copie o conteúdo de <code>dados/exemplos/resultados.csv</code> para <code>dados/resultados.csv</code> e lance pelo menos um alimento em <code>arrecadacao.csv</code>. Veja a página e depois apague esses lançamentos (mantendo o cabeçalho). Como o painel é público, faça isso antes de divulgar o endereço.</div>
 
   <h2 id="problemas"><span class="n">11</span>Problemas comuns</h2>
   <div class="tabela"><table>
     <thead><tr><th>O que acontece</th><th>Como resolver</th></tr></thead>
     <tbody>
-      <tr><td>Aparece uma faixa amarela “Atenção — verifique os CSVs”.</td><td>Ela diz exatamente qual linha tem problema (equipe ou alimento digitado diferente, quantidade inválida). Corrija o CSV e carregue de novo.</td></tr>
-      <tr><td>“Arquivos ignorados (nome não reconhecido)”.</td><td>O arquivo foi renomeado (ex.: <code>arrecadacao (1).csv</code>). Renomeie para o nome original.</td></tr>
+      <tr><td>Aparece uma faixa amarela “Atenção — verifique os CSVs”.</td><td>Ela diz exatamente qual linha tem problema (equipe ou alimento digitado diferente, quantidade inválida). Corrija o CSV no GitHub.</td></tr>
+      <tr><td>Enviei um CSV pelo Excel e nada mudou.</td><td>O arquivo foi enviado com outro nome (ex.: <code>arrecadacao (1).csv</code>). Apague o arquivo extra no GitHub e envie de novo com o nome original.</td></tr>
       <tr><td>Alimento contado com 0 ponto.</td><td>O nome em <code>arrecadacao.csv</code> não bate com <code>alimentos.csv</code>. Copie e cole o nome da tabela de valores.</td></tr>
-      <tr><td>Alterei o CSV, mas o painel não mudou.</td><td>No GitHub, confira se clicou em <strong>Commit changes</strong> e aguarde 1 a 2 minutos. Na área de gestão, arquivos carregados pelo botão têm prioridade: clique em <strong>Limpar CSVs</strong> para ver os dados publicados.</td></tr>
+      <tr><td>Alterei o CSV, mas o painel não mudou.</td><td>Confira se clicou em <strong>Commit changes</strong> e aguarde 1 a 2 minutos. Depois clique em <strong>Atualizar</strong>.</td></tr>
       <tr><td>O logo da equipe não aparece.</td><td>Confira se a imagem está em <code>dados/logos/</code> e se o caminho em <code>equipes.csv</code> está igual, inclusive a extensão (<code>.png</code>/<code>.jpg</code>).</td></tr>
       <tr><td>Botão Resultado Final continua cinza.</td><td>Veja a mensagem abaixo dele e a tabela “Pontuação por missão”: alguma missão está <em>pendente</em>.</td></tr>
-      <tr><td>Dados de outro teste aparecem no painel.</td><td>Na área de gestão, clique em <strong>Limpar CSVs</strong>. O painel público nunca mostra arquivos carregados manualmente.</td></tr>
-      <tr><td>“Painel indisponível no momento”.</td><td>Sem internet, ou o <code>index.html</code> foi aberto direto do computador. Use o endereço online ou a área de gestão.</td></tr>
-      <tr><td>“Usuário ou senha incorretos”.</td><td>Confira maiúsculas e símbolos da senha. O acesso é fornecido pela coordenação.</td></tr>
+      <tr><td>“Painel indisponível no momento”.</td><td>Verifique a internet e clique em <strong>Atualizar</strong>. O painel precisa ser aberto pelo endereço online (não funciona abrindo o <code>index.html</code> do computador).</td></tr>
     </tbody>
   </table></div>
 
   <h2 id="checklist"><span class="n">12</span>Checklist</h2>
   <h3>Antes do evento</h3>
   <ul class="check">
-    <li>Abrir o painel público no computador do telão e testar o login na área de gestão.</li>
+    <li>Abrir o painel no computador do telão e conferir a internet do local.</li>
+    <li>Conferir o login no GitHub de quem vai lançar os resultados.</li>
     <li>Preencher <code>equipes.csv</code> e <code>integrantes.csv</code> com os nomes reais.</li>
     <li>Definir a tabela de valores em <code>alimentos.csv</code> e divulgá-la às equipes.</li>
     <li>Conferir os pontos em <code>missoes.csv</code>.</li>
     <li>Apagar os lançamentos de exemplo de <code>arrecadacao.csv</code> e <code>resultados.csv</code> (mantendo a linha de cabeçalho).</li>
-    <li>Ensaiar a página de Resultado Final com <code>dados/exemplos/resultados.csv</code> e depois voltar aos dados reais.</li>
+    <li>Ensaiar a página de Resultado Final (veja a dica da seção 10) e depois apagar os lançamentos de teste.</li>
     <li>Conferir os versículos com a Bíblia usada pelo grupo.</li>
   </ul>
   <h3>No dia</h3>
   <ul class="check">
     <li>Abrir o painel e ativar <strong>Tela cheia</strong> no projetor.</li>
-    <li>Lançar cada missão logo após o resultado e carregar o CSV no painel.</li>
+    <li>Lançar cada missão no GitHub logo após o resultado.</li>
     <li>Após a Missão 2, colocar os logos das equipes.</li>
     <li>Conferir o <strong>Extrato de pontos</strong> sempre que houver dúvida — ele mostra cada ponto lançado.</li>
     <li>No encerramento, clicar em <strong>Resultado Final</strong>.</li>
-    <li>Ao final, guardar uma cópia da pasta <code>dados</code> como registro.</li>
+    <li>Ao final, os CSVs no GitHub ficam como registro oficial da gincana.</li>
   </ul>
 </main>
 <footer>EAC Barbacena · Encontro de Adolescentes com Cristo · Guia do Painel da Gincana</footer>

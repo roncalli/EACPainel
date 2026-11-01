@@ -6,7 +6,7 @@
 <title>Gincana EAC Barbacena</title>
 <link rel="stylesheet" href="painel.css">
 </head>
-<body data-modo="publico">
+<body>
 <header>
  <div class="header-inner">
   <div class="marca">
@@ -17,11 +17,56 @@
       <div class="sub" id="atualizado">Encontro de Adolescentes com Cristo</div>
     </div>
   </div>
-  <div class="actions"></div>
+  <div class="actions">
+    <button id="recarregar" type="button">Atualizar</button>
+    <button id="telao" type="button">Tela cheia</button>
+  </div>
  </div>
 </header>
 
-<main></main>
+<main>
+  <div id="carregar" class="card hidden">
+    <h2>Painel indisponível no momento</h2>
+    <p class="muted">Não foi possível ler os dados da gincana. Verifique a conexão e clique em <strong>Atualizar</strong>.</p>
+  </div>
+
+  <div id="painel" class="hidden">
+    <div id="avisos"></div>
+
+    <section>
+      <h2>Placar geral</h2>
+      <div id="placar"></div>
+    </section>
+
+    <section>
+      <h2>Pontuação por missão</h2>
+      <div class="card tabela-scroll" id="resumo"></div>
+    </section>
+
+    <section>
+      <h2>Detalhamento das missões</h2>
+      <div class="grid-missoes" id="missoes"></div>
+    </section>
+
+    <section>
+      <h2>Composição das equipes</h2>
+      <div class="grid-equipes" id="equipes"></div>
+    </section>
+
+    <section>
+      <h2>Extrato de pontos</h2>
+      <p class="muted small">Cada linha abaixo é um lançamento que compõe o placar. A soma de cada equipe é igual ao total do placar geral.</p>
+      <div class="card tabela-scroll" id="extrato"></div>
+    </section>
+
+    <section class="finalizar">
+      <button id="btn-final" class="btn-final" type="button" disabled>Resultado Final</button>
+      <p id="status-final" class="muted small"></p>
+    </section>
+  </div>
+
+  <div id="final" class="hidden"></div>
+</main>
 <footer><strong>EAC Barbacena</strong> · Encontro de Adolescentes com Cristo · Pontuação calculada a partir dos lançamentos publicados neste painel</footer>
 
 <script src="painel.js"></script>

@@ -6,32 +6,15 @@ Tudo é alimentado por arquivos CSV na pasta `dados/`.
 
 > Passo a passo completo e ilustrado: abra o arquivo **`GUIA.html`** (ou `GUIA.pdf`).
 
-## Como abrir
+## Como usar
 
-O painel tem duas páginas, que compartilham `painel.js` e `painel.css`:
+O painel é usado online, publicado no GitHub Pages: **https://roncalli.github.io/EACPainel/**
 
-- **Painel público** (`index.html`) – https://roncalli.github.io/EACPainel/
-  Mostra o placar lendo sempre os CSVs publicados em `dados/`. Não tem botões de carregar/limpar.
-  Relê os dados a cada 30 s. Para atualizar, edite o CSV no GitHub (pasta `dados/` → lápis → *Commit changes*);
-  em 1 a 2 minutos o site é republicado.
-- **Área de gestão** (endereço e acesso com a coordenação) – exige login e oferece **Carregar CSVs**,
-  **Limpar CSVs** e atalhos para editar cada CSV no GitHub. Os arquivos carregados ali são só uma
-  pré-visualização local (ou uso sem internet): não mudam o que o público vê.
-
-### Sobre o login
-O código guarda apenas um hash PBKDF2-SHA256 (310 mil iterações, com sal) de usuário e senha — as credenciais
-não aparecem em nenhum arquivo. Como o GitHub Pages é estático, o login esconde as ferramentas de gestão,
-mas a proteção real dos dados é a permissão de escrita no repositório do GitHub.
-
-Para trocar a senha, gere um novo hash e substitua `ACESSO` em `painel.js`:
-```bash
-node -e 'const c=require("crypto"),s=c.randomBytes(16).toString("hex");console.log(s,c.pbkdf2Sync("USUARIO\nSENHA",Buffer.from(s,"hex"),310000,32,"sha256").toString("hex"))'
-```
-(o usuário vai em minúsculas; a saída é `sal hash`).
-
-### Sem internet
-Descompacte o pacote, abra a página de gestão, faça login e carregue os 6 CSVs da pasta `dados/`.
-(O `index.html` aberto direto do computador não consegue ler a pasta e mostra “Painel indisponível”.)
+- Os dados vêm dos CSVs da pasta `dados/` e são relidos a cada 30 s.
+- Para atualizar, edite o CSV no GitHub (pasta `dados/` → lápis → *Commit changes*).
+  Em 1 a 2 minutos o site é republicado e o painel aberto se atualiza sozinho.
+- Botões: **Atualizar** (relê na hora) e **Tela cheia** (telão).
+- O `index.html` aberto direto do computador não consegue ler os CSVs: use sempre o endereço online.
 
 Os CSVs podem ser editados no Excel/LibreOffice/Google Planilhas. O separador pode ser
 `;` ou `,` e números aceitam vírgula decimal. **Não renomeie os arquivos.**
@@ -95,5 +78,5 @@ aparece discretamente para registro, e o botão **Voltar ao painel** retorna ao 
 Os textos da mensagem ficam na função `paginaFinal` do `painel.js`. Confira a redação dos
 versículos com a edição da Bíblia usada pelo grupo.
 
-Para testar a página antes do evento, na área de gestão carregue `dados/exemplos/resultados.csv`
-(todas as missões concluídas) pelo botão **Carregar CSVs**; depois clique em **Limpar CSVs** para voltar.
+Para ensaiar a página antes do evento, copie `dados/exemplos/resultados.csv` para `dados/resultados.csv`
+e lance ao menos um alimento em `arrecadacao.csv`; depois apague esses lançamentos (o painel é público).
